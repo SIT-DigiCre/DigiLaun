@@ -2,9 +2,7 @@ package net.digicre.digilaun;
 
 import java.awt.Image;
 import java.awt.Toolkit;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.io.IOException;
 
 /**
 * フォルダまたは JAR から画像を読み込んで保持するクラスです。
@@ -12,10 +10,7 @@ import java.util.List;
 *
 */
 public class ImageCache {
-	public final List<String> imgExtensions = Arrays.asList(new String[]
-			{ "png", "gif", "jpg"});//, "bmp", "ico" });
 	private Toolkit toolkit;
-	public String basePath = "./img";
 	
 	public ImageCache() {
 		this.toolkit = Toolkit.getDefaultToolkit();
@@ -26,16 +21,13 @@ public class ImageCache {
 	}
 	
 	public Image get(String key) {
-		String strFormat = String.format("%s/%s.%%s", basePath, key);
-		Iterator<String> i = imgExtensions.iterator();
-		while(i.hasNext()) {
-			String ext = i.next();
-			try {
-				return toolkit.getImage(String.format(strFormat, ext));
-			}
-			catch(Exception e) {
-			}
+		String path;
+
+		try {
+			path = new java.io.File(key).getCanonicalPath();
+		} catch (IOException e) {
+			path = new java.io.File(key).getAbsolutePath();
 		}
-		throw new RuntimeException("cannot load image: "+key);
+		return toolkit.getImage(path);
 	}
 }

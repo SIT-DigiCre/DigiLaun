@@ -19,6 +19,11 @@ import org.xml.sax.helpers.XMLReaderFactory;
  */
 public class WorkSet extends TreeSet<Work> {
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5127279267726729893L;
+
+	/**
 	 * 作品データ XML のパーサークラスです。
 	 * @author p10090
 	 *

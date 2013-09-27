@@ -14,7 +14,7 @@ class Timer implements Runnable {
 	/**
 	 * ラベルのテキスト
 	 */
-	private final String[] TEXT = {
+	private static final String[] TEXT = {
 			"作品をえらんでください",
 			"遊んでくれてありがとうございます!",
 			"遊びすぎです…",
@@ -23,27 +23,27 @@ class Timer implements Runnable {
 	/**
 	 * ラベルの更新周期 [ms]
 	 */
-	private final long UPDATE_INTERVAL = 60000L;
+	private static final long UPDATE_INTERVAL = 60000L;
 	/**
 	 * テキストの更新間隔 [ms]
 	 */
-	private final long TEXT_UPDATE_INTERVAL  = 1200000L; 
+	private static final long TEXT_UPDATE_INTERVAL  = 1200000L; 
 	/**
 	 * ラベル背景の色相の周期 [ms]
 	 */
-	private final float BACKGROUND_HUE_CYCLE = 1800E+3F;
+	private static final float BACKGROUND_HUE_CYCLE = 1800E+3F;
 	/**
 	 * ラベル背景の初期色相
 	 */
-	private final float BACKGROUND_HUE_INIT = 1F / 3F;
+	private static final float BACKGROUND_HUE_INIT = 1F / 3F;
 	/**
 	 * ラベル背景の彩度
 	 */
-	private final float BACKGROUND_SATUATION = 0.5F;
+	private static final float BACKGROUND_SATUATION = 0.5F;
 	/**
 	 * ラベル背景の明るさ
 	 */
-	private final float BACKGROUND_BRIGHTNESS = 1.0F;
+	private static final float BACKGROUND_BRIGHTNESS = 1.0F;
 	/**
 	 *  走っているスレッド<br>
 	 *  別インスタンスを代入すると、元のスレッドは終了する
@@ -61,13 +61,19 @@ class Timer implements Runnable {
 	 * <code>{@link timerLabel}</code> に設定するテキストです。
 	 */
 	private String labelText;
+	/**
+	 * タイマーが時間切れになったときのコールバックです。
+	 */
+	private Runnable callback;
 
 	/**
 	 * 新しいタイマーを作成します。
 	 * @param label 関連付けるラベル
+	 * @param callback 時間切れになったときのコールバック
 	 */
-	Timer(JLabel label) {
+	Timer(JLabel label, Runnable callback) {
 		this.timerLabel = label;
+		this.callback = callback;
 	}
 	
 	/**
@@ -107,6 +113,12 @@ class Timer implements Runnable {
 	 */
 	void start() {
 		stop();
+		// 頒布モードならラベルを初期化して終了
+		if(DigiLaun.getDistributionMode()) {
+			updateLabelText(0L);
+			updateLabelBackgroundColor(0L);
+			return;
+		}
 		(running = new Thread(this)).start();
 	}
 
@@ -116,10 +128,10 @@ class Timer implements Runnable {
 	 */
 	void updateLabelBackgroundColor(long dt) {
 		this.labelBgColor = Color.getHSBColor(
-				dt / this.BACKGROUND_HUE_CYCLE + this.BACKGROUND_HUE_INIT,
-				dt >= (this.TEXT.length-1) * this.TEXT_UPDATE_INTERVAL ?
-						0.0F : this.BACKGROUND_SATUATION,
-				this.BACKGROUND_BRIGHTNESS);
+				dt / BACKGROUND_HUE_CYCLE + BACKGROUND_HUE_INIT,
+				dt >= (TEXT.length-1) * TEXT_UPDATE_INTERVAL ?
+						0.0F : BACKGROUND_SATUATION,
+				BACKGROUND_BRIGHTNESS);
 		EventQueue.invokeLater(new Runnable() {
 			@Override
 			public void run() {
@@ -133,8 +145,8 @@ class Timer implements Runnable {
 	 * @param dt タイマー起動からの経過時間 [ms]
 	 */
 	void updateLabelText(long dt) {
-		Timer.this.labelText = Timer.this.TEXT[(int)(
-				dt / Timer.this.TEXT_UPDATE_INTERVAL
+		Timer.this.labelText = Timer.TEXT[(int)(
+				dt / Timer.TEXT_UPDATE_INTERVAL
 				)];
 		EventQueue.invokeLater(new Runnable() {
 			@Override
@@ -158,23 +170,23 @@ class Timer implements Runnable {
 		// タイマー起動からの経過時間
 		long dt = 0;
 		// 前のループ時の dt
-		long pt = -this.TEXT_UPDATE_INTERVAL;
+		long pt = -TEXT_UPDATE_INTERVAL;
 		
+		// 定期ループ
 		while(Thread.currentThread() == running) {
 			// 背景色の更新
 			updateLabelBackgroundColor(dt);
 			// 必要ならテキストも更新
-			if(dt/this.TEXT_UPDATE_INTERVAL != pt/this.TEXT_UPDATE_INTERVAL)
+			if(dt/TEXT_UPDATE_INTERVAL != pt/TEXT_UPDATE_INTERVAL)
 				synchronized(this) {
-					// 最後のテキストを表示したらタイマーを止める
 					updateLabelText(dt);
-					if(dt/this.TEXT_UPDATE_INTERVAL >= this.TEXT.length-1) {
+					// 最後のテキストを表示したらタイマーを止める
+					if(dt/TEXT_UPDATE_INTERVAL >= TEXT.length-1) {
 						this.stop();
 						EventQueue.invokeLater(new Runnable() {
 							@Override
 							public void run() {
-								System.out.println(timerLabel.getParent());
-								timerLabel.getParent().setEnabled(false);
+								callback.run();
 							}
 						});
 					}

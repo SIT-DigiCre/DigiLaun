@@ -25,6 +25,7 @@ import javax.swing.JScrollPane;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.ScrollPaneConstants;
@@ -208,7 +209,7 @@ public class DigiLaun {
 						} catch (Exception ex) {
 							String str = String.format("%s\n\n%s",
 									DigiLaun.WORKS_READING_FAILURE_MESSAGE,
-									ex.toString());
+									ex.getLocalizedMessage());
 							
 							for(StackTraceElement st : ex.getStackTrace()) {
 								str += "\n        at " + st.toString();
@@ -333,7 +334,7 @@ public class DigiLaun {
 		// アイコンを準備
 		String imgFilename = String.format(
 				"img/LabelBack%s.png", leftYears != 0 ? "Older" : "Newest");
-		Toolkit tk = Toolkit.getDefaultToolkit();
+		Toolkit tk = frmDigiLaun.getToolkit();
 		Image img = tk.getImage(imgFilename).getScaledInstance(
 				-1, DigiLaun.MAIN_COMPONENTS_SIZE.height,
 				Image.SCALE_SMOOTH);
@@ -401,13 +402,15 @@ public class DigiLaun {
 	 * @param work 作品
 	 */
 	private void makeWorkButton(final Work work) {
-		Toolkit tk = Toolkit.getDefaultToolkit();
+		Toolkit tk = frmDigiLaun.getToolkit();
+		// ボタンの大きさにズームしたアイコン画像を作成
 		Image img = tk.getImage(work.getIconPath()).getScaledInstance(
 				-1, DigiLaun.ICON_HEIGHT,
 				Image.SCALE_SMOOTH);
 		final ImageIcon icon = work.getIconPath() != null ?
 				new ImageIcon(img) : null;
-		final ActionListener action = new ActionListener() {
+		// ボタンのクリックイベント処理
+		final ActionListener al = new ActionListener() {
 			// ボタンがクリックされたときの処理
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -430,6 +433,25 @@ public class DigiLaun {
 				detailDialog.setVisible(true);
 			}
 		};
+		// ボタンのキー押下イベントをフレームに透過させる
+		final KeyListener kl = new KeyListener() {
+
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				DigiLaun.this.frmDigiLaun.dispatchEvent(arg0);
+			}
+
+			@Override
+			public void keyReleased(KeyEvent arg0) {
+				DigiLaun.this.frmDigiLaun.dispatchEvent(arg0);
+			}
+
+			@Override
+			public void keyTyped(KeyEvent arg0) {
+				DigiLaun.this.frmDigiLaun.dispatchEvent(arg0);
+			}
+			
+		};
 		
 		EventQueue.invokeLater(new Runnable() {
 			@Override
@@ -440,7 +462,8 @@ public class DigiLaun {
 				Font font = button.getFont();
 				button.setFont(font.deriveFont(font.getSize2D()*2F));
 				button.setIcon(icon);
-				button.addActionListener(action);
+				button.addActionListener(al);
+				button.addKeyListener(kl);
 				button.setHorizontalAlignment(SwingConstants.LEADING);
 				button.setHorizontalTextPosition(SwingConstants.TRAILING);
 				button.setVerticalTextPosition(SwingConstants.CENTER);

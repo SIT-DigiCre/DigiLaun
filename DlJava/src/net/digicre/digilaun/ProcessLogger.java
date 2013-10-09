@@ -56,14 +56,24 @@ class ProcessLogger {
 	/**
 	 * 作品の体験ログを書き出すファイルへのパスです。
 	 * このファイルは体験時に追記モードで開かれ、
-	 * アプリ実行開始 (Started) 、
-	 * アプリ正常終了 (ExitSuccessful)、アプリ異常終了 (ExitFailed)、
-	 * ファイルを開いた (Opened)、体験不可 (CannotOpen)
-	 * といったステータスと、作品起動ファイルのパスが書き込まれます。
+	 * 作品起動ファイルのパス、ステータス、そして日時が書き込まれます。<br>
+	 * ログに書き込まれるステータスは以下の通りです。
+	 * <ul>
+	 * <li>アプリ実行開始 <code>({@link OpenStatus#Started})</code></ul>
+	 * <li>アプリ強制終了 <code>({@link OpenStatus#Killed})</code></ul>
+	 * <li>アプリ正常終了 <code>({@link OpenStatus#ExitSuccessful})</code></ul>
+	 * <li>アプリ異常終了 <code>({@link OpenStatus#ExitFailed})</code></ul>
+	 * <li>ファイルを開いた <code>({@link OpenStatus#Opened})</code></ul>
+	 * <li>体験不可 <code>({@link OpenStatus#CannotOpen})</code></ul>
+	 * </ul>
+	 * @see OpenStatus
 	 */
 	static final String LOG_FILE_PATH = "Log.csv";
 	
-	static final String[] RECORDS_NAME = {
+	/**
+	 * CSV に書き込む各フィールドの名前です。
+	 */
+	static final String[] FIELD_NAMES = {
 		"作品名",
 		"ファイル",
 		"ステータス",
@@ -89,6 +99,7 @@ class ProcessLogger {
 	}
 
 	/**
+	 * パスで指定されたファイルへログを書き込む、
 	 * 新しい <code>ProcessLogger</code> を作成します。
 	 * @param filename ログ先のファイル名
 	 * @throws IOException 入出力例外
@@ -99,6 +110,7 @@ class ProcessLogger {
 	}
 	
 	/**
+	 * 指定されたファイルへログを書き込む、
 	 * 新しい <code>ProcessLogger</code> を作成します。
 	 * @param file ログ先のファイル
 	 * @throws IOException 入出力例外
@@ -107,7 +119,7 @@ class ProcessLogger {
 	ProcessLogger(File file) throws IOException {
 		this(new FileOutputStream(file, true));
 		if(file.length() == 0L)
-			this.writer.writeCSVRecord(RECORDS_NAME);
+			this.writer.writeCSVRecord(FIELD_NAMES);
 	}
 	
 	/**

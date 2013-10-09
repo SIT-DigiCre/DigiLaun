@@ -2,14 +2,11 @@ package net.digicre.digilaun;
 
 import java.awt.BorderLayout;
 import java.awt.Desktop;
-import java.awt.FlowLayout;
 import java.io.File;
 import java.io.IOException;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-
 import net.digicre.digilaun.work.Work;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -32,6 +29,11 @@ class DetailDialog extends JDialog {
 			"このさくひんは たいけんできないよ";
 
 	/**
+	 * 作品の詳しい情報が見えなかったときのエラーメッセージです。
+	 */
+	protected static final Object INFO_ERROR_MESSAGE = "詳しい情報は見えないよ";
+
+	/**
 	 * はう２ぷれいラベルに表示するテキストです。
 	 * 体験にどんなデバイスが必要かを記します。
 	 */
@@ -45,10 +47,11 @@ class DetailDialog extends JDialog {
 	private Work work;
 	private Process process;
 	private ProcessLogger logger;
-	private final JPanel contentPanel = new JPanel();
 	private JLabel h2pLabel;
 	private JButton startButton;
 	private JButton cancelButton;
+	private JButton btni;
+	private ScalableImageArea scalableImageArea;
 
 	/**
 	 * プロセスの終了を待ってウィンドウを閉じるスレッドです。
@@ -109,9 +112,10 @@ class DetailDialog extends JDialog {
 		borderLayout.setVgap(10);
 		borderLayout.setHgap(10);
 		getContentPane().setLayout(borderLayout);
-		contentPanel.setLayout(new FlowLayout());
-		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		getContentPane().add(contentPanel, BorderLayout.CENTER);
+		{
+			scalableImageArea = new ScalableImageArea();
+			getContentPane().add(scalableImageArea, BorderLayout.CENTER);
+		}
 		{
 			JPanel buttonPane = new JPanel();
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
@@ -167,7 +171,12 @@ class DetailDialog extends JDialog {
 				JPanel infoPanel = new JPanel();
 				buttonPane.add(infoPanel, BorderLayout.SOUTH);
 				{
-					JButton btni = new JButton("もっと詳しい情報(I)");
+					btni = new JButton("もっと詳しい情報(I)");
+					btni.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent arg0) {
+							InformationDialog.open(work);
+						}
+					});
 					btni.setMnemonic('I');
 					infoPanel.add(btni);
 				}
@@ -185,8 +194,8 @@ class DetailDialog extends JDialog {
 		// イラストが 640x480 になるようサイズ調整
 		this.pack();
 		this.setSize(
-				this.getWidth()  - this.contentPanel.getWidth()  + 640,
-				this.getHeight() - this.contentPanel.getHeight() + 480);
+				this.getWidth()  - this.scalableImageArea.getWidth()  + 640,
+				this.getHeight() - this.scalableImageArea.getHeight() + 480);
 		// 作品データを読んでコンポーネントに反映
 		this.work = work;
 		this.setTitle(work.getName());
@@ -196,7 +205,12 @@ class DetailDialog extends JDialog {
 				this.h2pLabel.setText(String.format(H2P_LABEL_TEXT, idev));
 			}
 		}
-		//TODO イラスト画像貼ったり、 Desktop 作ったり…
+		this.scalableImageArea.setWork(work);
+		// 情報テキストがありそうでなければ情報ボタンを無効化
+		this.btni.setEnabled(
+				work.getTextPath() != null &&
+				!work.getTextPath().isEmpty()
+				);
 	}
 
 	/**
@@ -216,6 +230,8 @@ class DetailDialog extends JDialog {
 			e2.printStackTrace();
 			logger = null;
 		}
+		// メモリー掃除
+		System.gc();
 		// 実行
 		try {
 			this.process = pb.start();
@@ -233,11 +249,13 @@ class DetailDialog extends JDialog {
 			} catch (Exception e1) {
 				// エラーを表示
 				putLog(ProcessLogger.OpenStatus.CannotOpen);
+				System.err.println(e .getLocalizedMessage());
+				System.err.println(e1.getLocalizedMessage());
 				javax.swing.JOptionPane.showMessageDialog(
 						DetailDialog.this, String.format("%s\n\n%s\n\n%s",
 								DetailDialog.OPENING_ERROR_MESSAGE,
-								e .getMessage(),
-								e1.getMessage()));
+								e .getLocalizedMessage(),
+								e1.getLocalizedMessage()));
 			}
 		}
 	}

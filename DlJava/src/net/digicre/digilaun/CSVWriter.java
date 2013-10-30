@@ -27,7 +27,7 @@ public class CSVWriter extends BufferedWriter {
 	public CSVWriter(Writer out, int sz) {
 		super(out, sz);
 	}
-	
+
 	/**
 	 * 文字列の配列を CSV レコードとして書き込みます。
 	 * @param fields 書き込むレコード

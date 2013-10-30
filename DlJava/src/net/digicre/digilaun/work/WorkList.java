@@ -1,7 +1,7 @@
 package net.digicre.digilaun.work;
 
 import java.io.IOException;
-import java.util.TreeSet;
+import java.util.LinkedList;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -12,15 +12,12 @@ import org.xml.sax.helpers.XMLReaderFactory;
 /**
  * 作品集のクラスです。
  * このクラスは<code>{@link net.digicre.digilaun.work.Work}</code>オブジェクトの
- * ツリーセット (<code>{@link TreeSet}</code>) を実装し、また XML
+ * 双方向リスト (<code>{@link LinkedList}</code>) を実装し、また XML
  * ドキュメントから作品データを読み込むメソッドを提供します。
  * @author p10090
  * @see Work
  */
-public class WorkSet extends TreeSet<Work> {
-	/**
-	 * 
-	 */
+public class WorkList extends LinkedList<Work> {
 	private static final long serialVersionUID = 5127279267726729893L;
 
 	/**
@@ -44,8 +41,9 @@ public class WorkSet extends TreeSet<Work> {
 		@Override
 		public void endElement(String uri, String localName, String qName)
 				throws SAXException {
-			if(work != null) {
-				WorkSet.this.add(work);
+			if(qName == Work.XML_ELEMENT_WORK &&
+					work != null) {
+				WorkList.this.add(work);
 				work = null;
 			}
 		}
@@ -62,11 +60,11 @@ public class WorkSet extends TreeSet<Work> {
 	 * 既定の読み込み元 XML ファイル名です。
 	 */
 	public static final String DEFAULT_INPUT_PATH = "works.xml";
-	
+
 	/**
 	 * 新しい作品集を作成します。
 	 */
-	public WorkSet() {
+	public WorkList() {
 		super();
 	}
 

@@ -12,65 +12,83 @@ public class Work implements Comparable<Work> {
 	 * XML ファイルにおける、ルートタグの名前です。
 	 */
 	public static final String XML_ELEMENT_ROOT = "DigiLaun";
-	
+
 	/**
 	 * XML ファイルにおける、作品タグの名前です。
 	 */
 	public static final String XML_ELEMENT_WORK = "work";
-	
+
 	/**
 	 * XML ファイルにおける、制作年属性の名前です。
 	 */
 	public static final String XML_ATTRIBUTE_YEAR = "year";
-	
+
 	/**
 	 * XML ファイルにおける、パス属性の名前です。
 	 */
 	public static final String XML_ATTRIBUTE_PATH = "path";
-	
+
 	/**
 	 * XML ファイルにおける、引数属性の名前です。
 	 */
 	public static final String XML_ATTRIBUTE_ARGS = "args";
-	
+
 	/**
 	 * XML ファイルにおける、アイコン属性の名前です。
 	 */
 	public static final String XML_ATTRIBUTE_ICON = "pathIcon";
-	
+
 	/**
 	 * XML ファイルにおける、絵属性の名前です。
 	 */
 	public static final String XML_ATTRIBUTE_PICT = "pathPicture";
-	
+
 	/**
 	 * XML ファイルにおける、テキスト属性の名前です。
 	 */
 	public static final String XML_ATTRIBUTE_INFO = "pathInfo";
-	
+
 	/**
 	 * XML ファイルにおける、入力属性の名前です。
 	 */
 	public static final String XML_ATTRIBUTE_IDEV = "inputDevice";
 
-	/** 最新バージョンの DTD */
-    private static String latestDTD = null;
-    /** 作品タイトル */
-    private String name;
-    /** 開くファイルの相対パス */
-    private String path;
-    /** コマンドライン引数 */
-    private String args;
-    /** タイトル画像の相対パス */
-    private String pict;
-    /** アイコン画像の相対パス */
-    private String icon;
-    /** クレジットの相対パス */
-    private String copy;
-    /** 入力デバイス */
-    private String idev;
-    /** リリース年度 */
-    private short year;
+	/**
+	 * 最新バージョンの DTD です。
+	 */
+    static String latestDTD = null;
+    /**
+	 * 作品タイトルです。
+	 */
+    String name;
+    /**
+	 * 開くファイルの相対パスです。
+	 */
+    String path;
+    /**
+	 * コマンドライン引数です。
+	 */
+    String args;
+    /**
+	 * タイトル画像の相対パスです。
+	 */
+    String pict;
+    /**
+	 * アイコン画像の相対パスです。
+	 */
+    String icon;
+    /**
+	 * クレジットの相対パスです。
+	 */
+    String copy;
+    /**
+	 * 入力デバイスです。
+	 */
+    String idev;
+    /**
+	 * リリース年度です。
+	 */
+    int year;
 
     /**
      * 最新バージョンの XML データの DTD を取得します。
@@ -93,7 +111,7 @@ public class Work implements Comparable<Work> {
             XML_ATTRIBUTE_IDEV+" CDATA ''>";
         return latestDTD;
     }
-    
+
     /**
      * 作品名を取得します。
      * @return 作品名
@@ -101,7 +119,7 @@ public class Work implements Comparable<Work> {
     public String getName() {
     	return name;
     }
-    
+
     /**
      * 作品を開くパスを取得します。
      * @return 作品を開くパス
@@ -109,7 +127,7 @@ public class Work implements Comparable<Work> {
     public String getPath() {
     	return path;
     }
-    
+
     /**
      * 作品へのコマンドライン引数を取得します。
      * コマンドライン引数は、作品がアプリケーションであるときに使用します。
@@ -118,7 +136,7 @@ public class Work implements Comparable<Work> {
     public String getArguments() {
     	return args;
     }
-    
+
     /**
      * 作品を説明する画像へのパスを取得します。
      * @return 作品を説明する画像へのパス
@@ -126,7 +144,7 @@ public class Work implements Comparable<Work> {
     public String getPicturePath() {
     	return pict;
     }
-    
+
     /**
      * 作品ボタンに使用するアイコン画像へのパスを取得します。
      * @return 作品ボタンに使用するアイコン画像へのパス
@@ -134,7 +152,7 @@ public class Work implements Comparable<Work> {
     public String getIconPath() {
     	return icon;
     }
-    
+
     /**
      * 作品の情報テキストファイルへのパスを取得します。
      * @return 作品の情報テキストファイルへのパス
@@ -142,7 +160,7 @@ public class Work implements Comparable<Work> {
     public String getTextPath() {
     	return copy;
     }
-    
+
     /**
      * 作品の入力デバイスの種類をあらわす文字列を取得します。
      * @return 作品の入力デバイスの種類
@@ -150,12 +168,12 @@ public class Work implements Comparable<Work> {
     public String getInputDeviceName() {
     	return idev;
     }
-    
+
     /**
      * 作品の制作年度を取得します。
      * @return 作品の制作年度
      */
-    public short getYear() {
+    public int getYear() {
     	return year;
     }
 
@@ -179,16 +197,18 @@ public class Work implements Comparable<Work> {
 	 */
 	public void setPropertiesByXMLAtts(Attributes atts) {
 		year = Short.parseShort(atts.getValue(XML_ATTRIBUTE_YEAR));
-		path = getPropertyFromXMLAttr(atts, XML_ATTRIBUTE_PATH);
-		args = getPropertyFromXMLAttr(atts, XML_ATTRIBUTE_ARGS);
+		path = getPropertyFromXMLAttr(atts, XML_ATTRIBUTE_PATH,
+				/* 旧名 */ "path");
+		args = getPropertyFromXMLAttr(atts, XML_ATTRIBUTE_ARGS,
+				/* 旧名 */ "args");
 		icon = getPropertyFromXMLAttr(atts, XML_ATTRIBUTE_ICON,
-				"icon");
+				/* 旧名 */ "icon");
 		pict = getPropertyFromXMLAttr(atts, XML_ATTRIBUTE_PICT,
-				"pict");
+				/* 旧名 */ "pict");
 		copy = getPropertyFromXMLAttr(atts, XML_ATTRIBUTE_INFO,
-				"info", "crdt", "copy");
+				/* 旧名 */ "info", "crdt", "copy");
 		idev = getPropertyFromXMLAttr(atts, XML_ATTRIBUTE_IDEV,
-				"idev");
+				/* 旧名 */ "idev");
 	}
 
 	/**
@@ -207,9 +227,9 @@ public class Work implements Comparable<Work> {
 	/**
 	 * 作品名を設定します。
 	 * SAX を使って XML からデータを読み込むときに呼び出されます。
-	 * @param valueOf 設定する名前
+	 * @param value 設定する名前
 	 */
-	void setName(String valueOf) {
-		name = valueOf.replaceAll("^?\\s+$?", "");
+	void setName(String value) {
+		name = value.replaceAll("^\\s+|\\s+$", "");
 	}
 }

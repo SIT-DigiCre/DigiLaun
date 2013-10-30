@@ -21,7 +21,7 @@ import javax.swing.SwingConstants;
  *
  */
 @SuppressWarnings("serial")
-class DetailDialog extends JDialog {
+class SummaryDialog extends JDialog {
 	/**
 	 * ファイルを実行もオープンもできなかったときのエラーメッセージです。
 	 */
@@ -31,14 +31,15 @@ class DetailDialog extends JDialog {
 	/**
 	 * 作品の詳しい情報が見えなかったときのエラーメッセージです。
 	 */
-	protected static final Object INFO_ERROR_MESSAGE = "詳しい情報は見えないよ";
+	protected static final Object INFO_ERROR_MESSAGE =
+			"詳しい情報を開けませんでした.";
 
 	/**
 	 * はう２ぷれいラベルに表示するテキストです。
 	 * 体験にどんなデバイスが必要かを記します。
 	 */
 	private static final String H2P_LABEL_TEXT = "この作品では, %sを使います.";
-	
+
 	/**
 	 * 強制終了ボタンのテキストです。
 	 */
@@ -51,7 +52,7 @@ class DetailDialog extends JDialog {
 	private JButton startButton;
 	private JButton cancelButton;
 	private JButton btni;
-	private ScalableImageArea scalableImageArea;
+	private SummaryImageArea summaryImageArea;
 
 	/**
 	 * プロセスの終了を待ってウィンドウを閉じるスレッドです。
@@ -62,22 +63,22 @@ class DetailDialog extends JDialog {
 		public void run() {
 			putLog(ProcessLogger.OpenStatus.Started);
 			try {
-				DetailDialog.this.process.waitFor();
+				SummaryDialog.this.process.waitFor();
 			} catch (InterruptedException e) {
 			}
-			if(DetailDialog.this.process != null)
-				putLog(DetailDialog.this.process.exitValue() != 0
+			if(SummaryDialog.this.process != null)
+				putLog(SummaryDialog.this.process.exitValue() != 0
 					? ProcessLogger.OpenStatus.ExitFailed
 					: ProcessLogger.OpenStatus.ExitSuccessful);
-			DetailDialog.this.dispatchEvent(new WindowEvent(
-					DetailDialog.this, WindowEvent.WINDOW_CLOSING));
+			SummaryDialog.this.dispatchEvent(new WindowEvent(
+					SummaryDialog.this, WindowEvent.WINDOW_CLOSING));
 		}
 	}
 
 	/**
 	 * Create the dialog.
 	 */
-	private DetailDialog() {
+	private SummaryDialog() {
 		setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
 			@Override
@@ -86,7 +87,7 @@ class DetailDialog extends JDialog {
 					// プロセスが終了済みなら閉じる
 					try {
 						process.exitValue();
-						DetailDialog.this.dispose();
+						SummaryDialog.this.dispose();
 					}
 					// プロセスが実行中なら何もしない
 					catch(IllegalThreadStateException e) {
@@ -94,14 +95,14 @@ class DetailDialog extends JDialog {
 				}
 				// プロセスが未実行なら閉じる
 				else {
-					DetailDialog.this.dispose();
+					SummaryDialog.this.dispose();
 				}
 			}
 			@Override
 			public void windowClosed(WindowEvent arg0) {
-				synchronized(DetailDialog.this) {
-					if(DetailDialog.this.logger != null)
-						DetailDialog.this.logger.close();
+				synchronized(SummaryDialog.this) {
+					if(SummaryDialog.this.logger != null)
+						SummaryDialog.this.logger.close();
 				}
 			}
 		});
@@ -113,8 +114,8 @@ class DetailDialog extends JDialog {
 		borderLayout.setHgap(10);
 		getContentPane().setLayout(borderLayout);
 		{
-			scalableImageArea = new ScalableImageArea();
-			getContentPane().add(scalableImageArea, BorderLayout.CENTER);
+			summaryImageArea = new SummaryImageArea();
+			getContentPane().add(summaryImageArea, BorderLayout.CENTER);
 		}
 		{
 			JPanel buttonPane = new JPanel();
@@ -124,8 +125,8 @@ class DetailDialog extends JDialog {
 				startButton = new JButton("はじめる!");
 				startButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
-						if(DetailDialog.this.process == null) {
-							DetailDialog.this.startWorkTrial();
+						if(SummaryDialog.this.process == null) {
+							SummaryDialog.this.startWorkTrial();
 							((javax.swing.AbstractButton)arg0.getSource()
 									).setEnabled(false);
 						}
@@ -146,19 +147,19 @@ class DetailDialog extends JDialog {
 								process.exitValue();
 							}
 							catch(IllegalThreadStateException ex) {
-								synchronized(DetailDialog.this) {
+								synchronized(SummaryDialog.this) {
 									// 強制終了
-									DetailDialog.this.process.destroy();
-									DetailDialog.this.process = null;
+									SummaryDialog.this.process.destroy();
+									SummaryDialog.this.process = null;
 								}
-								DetailDialog.this.putLog(
+								SummaryDialog.this.putLog(
 										ProcessLogger.OpenStatus.Killed);
 							}
 						}
 						// 閉じる
-						DetailDialog.this.processWindowEvent(
+						SummaryDialog.this.processWindowEvent(
 								new java.awt.event.WindowEvent(
-										DetailDialog.this,
+										SummaryDialog.this,
 										java.awt.event.WindowEvent.
 										WINDOW_CLOSING));
 					}
@@ -188,14 +189,14 @@ class DetailDialog extends JDialog {
 			}
 		}
 	}
-	
-	public DetailDialog(Work work) {
+
+	public SummaryDialog(Work work) {
 		this();
 		// イラストが 640x480 になるようサイズ調整
 		this.pack();
 		this.setSize(
-				this.getWidth()  - this.scalableImageArea.getWidth()  + 640,
-				this.getHeight() - this.scalableImageArea.getHeight() + 480);
+				this.getWidth()  - this.summaryImageArea.getWidth()  + 640,
+				this.getHeight() - this.summaryImageArea.getHeight() + 480);
 		// 作品データを読んでコンポーネントに反映
 		this.work = work;
 		this.setTitle(work.getName());
@@ -205,12 +206,15 @@ class DetailDialog extends JDialog {
 				this.h2pLabel.setText(String.format(H2P_LABEL_TEXT, idev));
 			}
 		}
-		this.scalableImageArea.setWork(work);
+		this.summaryImageArea.setWork(work);
 		// 情報テキストがありそうでなければ情報ボタンを無効化
 		this.btni.setEnabled(
 				work.getTextPath() != null &&
 				!work.getTextPath().isEmpty()
 				);
+
+		// 中央に表示
+		this.setLocationRelativeTo(null);
 	}
 
 	/**
@@ -236,7 +240,7 @@ class DetailDialog extends JDialog {
 		try {
 			this.process = pb.start();
 			new ProcessWaitingThread().start();
-			this.cancelButton.setText(DetailDialog.KILL_BUTTON_TEXT);
+			this.cancelButton.setText(SummaryDialog.KILL_BUTTON_TEXT);
 		}
 		// 失敗したら
 		catch (IOException e) {
@@ -245,15 +249,15 @@ class DetailDialog extends JDialog {
 			try {
 				d.open(file);
 				putLog(ProcessLogger.OpenStatus.Opened);
-				DetailDialog.this.dispose();
+				SummaryDialog.this.dispose();
 			} catch (Exception e1) {
 				// エラーを表示
 				putLog(ProcessLogger.OpenStatus.CannotOpen);
 				System.err.println(e .getLocalizedMessage());
 				System.err.println(e1.getLocalizedMessage());
 				javax.swing.JOptionPane.showMessageDialog(
-						DetailDialog.this, String.format("%s\n\n%s\n\n%s",
-								DetailDialog.OPENING_ERROR_MESSAGE,
+						SummaryDialog.this, String.format("%s\n\n%s\n\n%s",
+								SummaryDialog.OPENING_ERROR_MESSAGE,
 								e .getLocalizedMessage(),
 								e1.getLocalizedMessage()));
 			}

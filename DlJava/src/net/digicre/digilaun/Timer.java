@@ -12,7 +12,7 @@ import javax.swing.JLabel;
  */
 class Timer implements Runnable {
 	/**
-	 * ラベルのテキスト
+	 * ラベルのテキストです。
 	 */
 	private static final String[] TEXT = {
 			"作品をえらんでください",
@@ -21,32 +21,34 @@ class Timer implements Runnable {
 			"TIME UP!"
 	};
 	/**
-	 * ラベルの更新周期 [ms]
+	 * ラベルの更新周期 [ms] です。
 	 */
 	private static final long UPDATE_INTERVAL = 60000L;
 	/**
-	 * テキストの更新間隔 [ms]
+	 * テキストの更新間隔 [ms] です。
 	 */
-	private static final long TEXT_UPDATE_INTERVAL  = 1200000L; 
+	private static final long TEXT_UPDATE_INTERVAL  =
+			3600000L/(TEXT.length-1); 
 	/**
-	 * ラベル背景の色相の周期 [ms]
+	 * ラベル背景の色相の周期 [ms] です。
 	 */
-	private static final float BACKGROUND_HUE_CYCLE = 1800E+3F;
+	private static final float BACKGROUND_HUE_CYCLE =
+			3600E+3F/2F;
 	/**
-	 * ラベル背景の初期色相
+	 * ラベル背景の初期色相です。
 	 */
 	private static final float BACKGROUND_HUE_INIT = 1F / 3F;
 	/**
-	 * ラベル背景の彩度
+	 * ラベル背景の彩度です。
 	 */
 	private static final float BACKGROUND_SATUATION = 0.5F;
 	/**
-	 * ラベル背景の明るさ
+	 * ラベル背景の明るさです。
 	 */
 	private static final float BACKGROUND_BRIGHTNESS = 1.0F;
 	/**
-	 *  走っているスレッド<br>
-	 *  別インスタンスを代入すると、元のスレッドは終了する
+	 *  走っているスレッドです。<br>
+	 *  別のインスタンスを代入すると、元のスレッドは終了します。
 	 */
 	private Thread running = null;
 	/**
@@ -54,11 +56,11 @@ class Timer implements Runnable {
 	 */
 	private JLabel timerLabel;
 	/**
-	 * <code>{@link timerLabel}</code> に設定する背景色です。
+	 * <code>{@link #timerLabel}</code> に設定する背景色です。
 	 */
 	private Color labelBgColor;
 	/**
-	 * <code>{@link timerLabel}</code> に設定するテキストです。
+	 * <code>{@link #timerLabel}</code> に設定するテキストです。
 	 */
 	private String labelText;
 	/**
@@ -75,7 +77,7 @@ class Timer implements Runnable {
 		this.timerLabel = label;
 		this.callback = callback;
 	}
-	
+
 	/**
 	 * ラベル更新タイマーを停止します。
 	 * このメソッドは、ガーベッジ
@@ -97,12 +99,12 @@ class Timer implements Runnable {
 	 */
 	void stop() {
 		Thread t;
-		
+
 		synchronized(this) {
 			t = running;
 			running = null;
 		}
-		
+
 		if(t != null)
 			t.interrupt();
 	}
@@ -155,10 +157,10 @@ class Timer implements Runnable {
 			}
 		});
 	}
-	
+
 	/**
 	 * ラベル自動更新スレッドのエントリーポイントです。
-	 * このメソッドは、<code>{@link stopTimer()}</code>
+	 * このメソッドは、<code>{@link #stop()}</code>
 	 *  が呼び出されるまで継続します。
 	 */
 	@Override
@@ -171,7 +173,7 @@ class Timer implements Runnable {
 		long dt = 0;
 		// 前のループ時の dt
 		long pt = -TEXT_UPDATE_INTERVAL;
-		
+
 		// 定期ループ
 		while(Thread.currentThread() == running) {
 			// 背景色の更新
@@ -191,7 +193,7 @@ class Timer implements Runnable {
 						});
 					}
 				}
-			
+
 			pt = t;
 			try {
 				Thread.sleep((t+=UPDATE_INTERVAL) - System.currentTimeMillis());
@@ -205,5 +207,5 @@ class Timer implements Runnable {
 			dt = t - t0;
 		}
 	}
-	
+
 }

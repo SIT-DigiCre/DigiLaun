@@ -1,6 +1,7 @@
 package net.digicre.digilaun;
 
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.event.ComponentEvent;
@@ -11,29 +12,53 @@ import javax.swing.JComponent;
 
 import net.digicre.digilaun.work.Work;
 
+/**
+ * 作品の詳細イメージを、必要に応じて伸縮しながら表示するコンポーネントです。
+ * @author p10090
+ *
+ */
 @SuppressWarnings("serial")
-public class ScalableImageArea extends JComponent implements ComponentListener {
+public class SummaryImageArea extends JComponent implements ComponentListener {
 
 	/**
 	 * 画像が読めなかったときに、代わりに表示する画像へのパスです。
 	 */
 	private static final String ALTERNATIVE_IMAGE_PATH =
-			"img/NoDetailImage.png";
+			"img/NoSummaryImage.png";
+
+	/**
+	 * 代替イメージです。
+	 */
+	private static Image alternativeImage = null;
+
+	/**
+	 * この <code>DetailImageArea</code> に関連付けられた作品オブジェクトです。
+	 */
+	private Work work;
+
 	/**
 	 * コンポーネントに表示するイメージです。
 	 */
 	private Image baseImage;
-	
-	private boolean imgIsAnternative = false;
-	
-	ScalableImageArea() {
+
+	/**
+	 * 新しい <code>DetailImageArea</code> を作成します。
+	 */
+	SummaryImageArea() {
 		this.baseImage = null;
 	}
 
+	/**
+	 * この <code>DetailImageArea</code> に関連付ける作品をセットします。
+	 * @param work
+	 */
 	synchronized void setWork(Work work) {
+		if(this.work == work)
+			return;
+		this.work = work;
 		this.baseImage = this.getToolkit().createImage(work.getPicturePath());
-		imgIsAnternative = false;
 	}
+
 	@Override
 	public void componentHidden(ComponentEvent arg0) {
 	}
@@ -42,6 +67,10 @@ public class ScalableImageArea extends JComponent implements ComponentListener {
 	public void componentMoved(ComponentEvent arg0) {
 	}
 
+	/**
+	 * このコンポーネントがリサイズされた時のイベント処理です。
+	 * このコンポーネントを再描画します。
+	 */
 	@Override
 	public void componentResized(ComponentEvent arg0) {
 		repaint();
@@ -51,21 +80,34 @@ public class ScalableImageArea extends JComponent implements ComponentListener {
 	public void componentShown(ComponentEvent arg0) {
 	}
 
+	/**
+	 * 代替イメージのインスタンスを作成し、フィールドに格納します。
+	 * すでにあれば何もしません。
+	 */
+	private synchronized void createAlternativeImage() {
+		if(alternativeImage == null) {
+			alternativeImage =
+					this.getToolkit().getImage(ALTERNATIVE_IMAGE_PATH);
+		}
+	}
+	/**
+	 * このコンポーネントを描画します。
+	 * @param g 描画用 Graphics オブジェクト
+	 */
 	@Override
 	public void paint(Graphics g) {
 		// 拡大後の寸法
 		int newWidth, newHeight;
-		
+
 		// 元イメージがロード失敗なら
 		synchronized(this) {
 			if(baseImage == null ||
-					!imgIsAnternative &&
+					baseImage != alternativeImage &&
 					(checkImage(baseImage, this) &
 							(ImageObserver.ABORT | ImageObserver.ERROR)) != 0) {
 				// 別のイメージをロード
-				this.baseImage =
-						this.getToolkit().createImage(ALTERNATIVE_IMAGE_PATH);
-				imgIsAnternative = true;
+				createAlternativeImage();
+				this.baseImage = alternativeImage;
 			}
 		}
 		// 拡大後の寸法を計算
@@ -90,28 +132,13 @@ public class ScalableImageArea extends JComponent implements ComponentListener {
 					this.baseImage.getHeight(this) * zoom_n / zoom_d;
 		}
 		// 描画
-		if(g instanceof java.awt.Graphics2D)
-			((java.awt.Graphics2D)g).setRenderingHint(
+		if(g instanceof Graphics2D)
+			((Graphics2D)g).setRenderingHint(
 					RenderingHints.KEY_INTERPOLATION,
 					RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 		g.drawImage(baseImage,
 				(this.getWidth () - newWidth ) / 2,
 				(this.getHeight() - newHeight) / 2,
 				newWidth, newHeight, this);
-/*		// スケールドイメージがないか、サイズが異なれば
-		synchronized(this) {
-			if(this.scaledImage == null ||
-					this.scaledImage.getWidth (this) != newWidth ||
-					this.scaledImage.getHeight(this) != newHeight) {
-				// イメージを作り直す
-				this.scaledImage = this.baseImage.getScaledInstance(
-						newWidth, newHeight,
-						Image.SCALE_SMOOTH);
-			}
-		}
-		// 描画
-		g.drawImage(scaledImage,
-				(this.getWidth () - newWidth ) / 2,
-				(this.getHeight() - newHeight) / 2, this);
-*/	}
+	}
 }

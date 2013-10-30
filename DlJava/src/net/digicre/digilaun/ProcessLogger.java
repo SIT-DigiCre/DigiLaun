@@ -25,32 +25,17 @@ class ProcessLogger {
 	 */
 	static enum OpenStatus {
 		/** 起動成功 */
-		Started {
-			@Override public String toString() { return "Started"; }
-		},
+		Started,
 		/** 最後まで正常 */
-		ExitSuccessful {
-			@Override public String toString() { return "ExitSuccessful"; }
-		},
+		ExitSuccessful,
 		/** 異常終了 */
-		ExitFailed {
-			@Override public String toString() { return "ExitFailed"; }
-		},
+		ExitFailed,
 		/** 強制終了 */
-		Killed {
-			@Override public String toString() { return "Killed"; }
-		},
+		Killed,
 		/** ゲームではない作品を開いた */
-		Opened {
-			@Override public String toString() { return "Opened"; }
-		},
+		Opened,
 		/** 開けない */
-		CannotOpen {
-			@Override public String toString() { return "CannotOpen"; }
-		};
-		
-		@Override
-		abstract public String toString();
+		CannotOpen,
 	}
 
 	/**
@@ -69,7 +54,7 @@ class ProcessLogger {
 	 * @see OpenStatus
 	 */
 	static final String LOG_FILE_PATH = "Log.csv";
-	
+
 	/**
 	 * CSV に書き込む各フィールドの名前です。
 	 */
@@ -85,14 +70,16 @@ class ProcessLogger {
 		"秒",
 		"グリニッジ標準時からの経過時間 [ms]",
 	};
-	
+
 	private final CSVWriter writer;
-	
+
 	/**
-	 * {@link LOG_FILE_PATH} で示されているファイルへログを書き込む、
-	 * 新しい <code>ProcessLogger</code> を作成します。
+	 * {@link #LOG_FILE_PATH}
+	 * で示されているファイルへログを書き込む、新しい
+	 * <code>ProcessLogger</code> を作成します。
 	 * @throws IOException 入出力例外
-	 * @see ProcessLogger#ProcessLogger(String), LOG_FILE_PATH
+	 * @see #ProcessLogger(String)
+	 * @see #LOG_FILE_PATH
 	 */
 	ProcessLogger() throws IOException {
 		this(LOG_FILE_PATH);
@@ -103,35 +90,35 @@ class ProcessLogger {
 	 * 新しい <code>ProcessLogger</code> を作成します。
 	 * @param filename ログ先のファイル名
 	 * @throws IOException 入出力例外
-	 * @see ProcessLogger#ProcessLogger(java.io.File)
+	 * @see #ProcessLogger(java.io.File)
 	 */
 	ProcessLogger(String filename) throws IOException {
 		this(new File(filename));
 	}
-	
+
 	/**
 	 * 指定されたファイルへログを書き込む、
 	 * 新しい <code>ProcessLogger</code> を作成します。
 	 * @param file ログ先のファイル
 	 * @throws IOException 入出力例外
-	 * @see ProcessLogger#ProcessLogger(java.io.FileOutputStream)
+	 * @see #ProcessLogger(java.io.OutputStream)
 	 */
 	ProcessLogger(File file) throws IOException {
 		this(new FileOutputStream(file, true));
 		if(file.length() == 0L)
 			this.writer.writeCSVRecord(FIELD_NAMES);
 	}
-	
+
 	/**
 	 * 新しい <code>ProcessLogger</code> を作成します。
 	 * @param out ログの出力先ストリーム
 	 * @throws IOException 入出力例外
-	 * @see ProcessLogger#ProcessLogger(java.io.Writer)
+	 * @see #ProcessLogger(java.io.Writer)
 	 */
 	ProcessLogger(OutputStream out) throws IOException {
 		this(new OutputStreamWriter(out));
 	}
-	
+
 	/**
 	 * 新しい <code>ProcessLogger</code> を作成します。
 	 * @param writer ログの出力に使う <code>{@link java.io.Writer}</code>
@@ -140,7 +127,7 @@ class ProcessLogger {
 	ProcessLogger(Writer writer) throws IOException {
 		this.writer = new CSVWriter(writer);
 	}
-	
+
 	/**
 	 *  作品のプロセス状態を書き込みます。
 	 * @param work 作品
@@ -163,7 +150,7 @@ class ProcessLogger {
 				Long.toString(c.getTimeInMillis()),
 		});
 	}
-	
+
 	/**
 	 * ログライターを閉じ、ログを終了します。
 	 */

@@ -1,41 +1,36 @@
 package net.digicre.digilaun;
 
+import java.awt.AWTEvent;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.EventQueue;
-import java.awt.Image;
-import java.awt.Toolkit;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.GridBagConstraints;
 import java.util.Arrays;
-import java.util.Calendar;
+import java.util.ListIterator;
 import java.util.regex.Pattern;
 
 import javax.swing.JFrame;
 
 import net.digicre.digilaun.work.Work;
-import net.digicre.digilaun.work.WorkSet;
+import net.digicre.digilaun.work.WorkList;
 import java.awt.BorderLayout;
 import javax.swing.JLabel;
 import java.awt.Font;
 
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.SwingConstants;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyListener;
+import java.awt.event.AWTEventListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.ScrollPaneConstants;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.Color;
-import java.awt.GridLayout;
-import javax.swing.JMenuBar;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
+import java.awt.Rectangle;
+import java.awt.GridBagLayout;
 
 /**
  * Digi Laun のエントリーポイントと、コマンドライン引数の取得機能を提供します。
@@ -54,7 +49,7 @@ public class DigiLaun {
 	 */
 	private static final String WORKS_READING_FAILURE_MESSAGE =
 			"作品ファイルの読み込みに失敗しました。";
-	
+
 	/**
 	 * 頒布モード OFF の時に閉じようとしたとき、表示するメッセージです。
 	 */
@@ -62,17 +57,17 @@ public class DigiLaun {
 			"やめたいときは,\n" +
 			"デジクリのふだをかけた人に\n" +
 			"こえをかけてください.";
-	
+
 	/**
 	 * 最新作を示すラベルやメニュー項目のテキストです。
 	 */
-	private static final String NEWEST_TEXT = "最新作";
-	
+	static final String NEWEST_TEXT = "最新作";
+
 	/**
 	 * 過去作を示すラベルやメニュー項目のテキストです。
 	 */
-	private static final String OLDER_TEXT = "%sの作品";
-	
+	static final String OLDER_TEXT = "%sの作品";
+
 	/**
 	 * 頒布モード OFF で長時間遊び続けたときのテキストです。
 	 */
@@ -85,38 +80,39 @@ public class DigiLaun {
 	private static final String BUTTON_ACTION_KEYS =
 			"QWERTYUIOPASDFGHJKLZXCVBNM";
 	//*/
-	
-	/**
-	 * <code>{@link indexPanel}</code> に配置する子コンポーネントのサイズです。
-	 */
-	private static final Dimension MAIN_COMPONENTS_SIZE = new Dimension(6, 70);
-
-	private static final int ICON_HEIGHT = MAIN_COMPONENTS_SIZE.height - 6;
-	/**
-	 * 画像のキャッシュオブジェクトです。
-	 */
-	//TODO:static ImageCache imgCache = new ImageCache();
-	
-	/**
-	 * 作品集
-	 */
-	WorkSet works = new WorkSet();
 
 	/**
-	 * コマンドライン引数
+	 * 作品の集合オブジェクトです。
+	 */
+	WorkList works = new WorkList();
+
+	/**
+	 * コマンドライン引数です。
 	 */
 	private static String[] args = null;
-	
+
 	/**
-	 * 頒布モード
-	 * 真の時は隠しコマンドを無効化し、普通に閉じて終了できるようになる
+	 * 頒布モードのフラグです。
+	 * 真の時は隠しコマンドを無効化し、普通に閉じて終了できるようになります。
 	 */
 	private static boolean distributionMode = false;
+
+	/**
+	 * 連続使用時間を監視するタイマーです。
+	 */
 	private Timer timer;
-	
+
+	/**
+	 * グラフィックス環境オブジェクトです。全画面表示に使います。
+	 */
+	GraphicsEnvironment ge = null;
+	/**
+	 * 全画面表示に使うモニターです。
+	 */
+	GraphicsDevice gd = null;
+
 	private JFrame frmDigiLaun;
 	private JPanel indexPanel;
-	private JMenu chooseFromYearMnc;
 	private JLabel headLabel;
 	private JScrollPane indexScrollPane;
 
@@ -128,7 +124,7 @@ public class DigiLaun {
 		// 引数を処理
 		DigiLaun.args = args;
 		DigiLaun.distributionMode = true;
-		
+
 		for(String arg : args) {
 			// "/DISPLAY", "--display" オプションがなければ頒布モード 
 			if(Pattern.compile(
@@ -139,13 +135,20 @@ public class DigiLaun {
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+//					javax.swing.UIManager.setLookAndFeel(
+//							javax.swing.UIManager.
+//							getSystemLookAndFeelClassName());
 					DigiLaun window = new DigiLaun();
+//					// 展示モードなら全画面
+//					if(!DigiLaun.getDistributionMode())
+//						window.setFullScreenMode(true);
 					window.frmDigiLaun.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		});
+
 	}
 
 	/**
@@ -155,12 +158,12 @@ public class DigiLaun {
 	public static String[] getArguments() {
 		return Arrays.copyOf(args, args.length);
 	}
-	
+
 	/**
 	 * 頒布モードかどうかを取得します。
 	 * <br>頒布モードが入っていると、 Digi Laun を
 	 * [閉じる] ボタンで終了できます。
-	 * @return 頒布モードかどうか
+	 * @return 頒布モードなら真
 	 */
 	public static boolean getDistributionMode() {
 		return distributionMode;
@@ -178,26 +181,8 @@ public class DigiLaun {
 	 */
 	private void initialize() {
 		frmDigiLaun = new JFrame();
+		frmDigiLaun.setBounds(new Rectangle(0, 0, 800, 600));
 		frmDigiLaun.setTitle("Digi Laun");
-		frmDigiLaun.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent arg0) {
-				// 頒布モードなら無視
-				if(DigiLaun.getDistributionMode())
-					return;
-				// 終了   Ctrl+Shift+2
-				if(arg0.isControlDown() &&
-						arg0.isShiftDown() &&
-						arg0.getKeyCode() == KeyEvent.VK_2)
-					//System.exit(0);
-					DigiLaun.this.frmDigiLaun.dispose();
-				// リセット   Ctrl+Shift+-
-				if(arg0.isControlDown() &&
-						arg0.isShiftDown() &&
-						arg0.getKeyCode() == KeyEvent.VK_MINUS)
-					DigiLaun.this.resetFrame();
-			}
-		});
 		frmDigiLaun.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowOpened(WindowEvent e) {
@@ -210,7 +195,7 @@ public class DigiLaun {
 							String str = String.format("%s\n\n%s",
 									DigiLaun.WORKS_READING_FAILURE_MESSAGE,
 									ex.getLocalizedMessage());
-							
+
 							for(StackTraceElement st : ex.getStackTrace()) {
 								str += "\n        at " + st.toString();
 							}
@@ -237,14 +222,18 @@ public class DigiLaun {
 			}
 			@Override
 			public void windowClosed(WindowEvent arg0) {
+				if(getFullScreenMode())
+					DigiLaun.this.setFullScreenMode(false);
 				timer.stop();
+//				System.exit(0);
 			}
 		});
 		frmDigiLaun.setBounds(100, 100, 640, 480);
 		frmDigiLaun.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		frmDigiLaun.getContentPane().setLayout(new BorderLayout(0, 0));
-		
+
 		headLabel = new JLabel("読み込みちふ…");
+		headLabel.setPreferredSize(new Dimension(91, 70));
 		headLabel.setHorizontalTextPosition(SwingConstants.CENTER);
 		headLabel.setIcon(new ImageIcon("img/Logo.png"));
 		headLabel.setBackground(Color.WHITE);
@@ -252,248 +241,88 @@ public class DigiLaun {
 		headLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		headLabel.setFont(headLabel.getFont().deriveFont(headLabel.getFont().getStyle() | Font.BOLD, 23f));
 		frmDigiLaun.getContentPane().add(headLabel, BorderLayout.NORTH);
-		
+
 		indexScrollPane = new JScrollPane();
 		frmDigiLaun.getContentPane().add(indexScrollPane, BorderLayout.CENTER);
 		indexScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		indexScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		
+
 		indexPanel = new JPanel();
 		indexScrollPane.setViewportView(indexPanel);
-		indexPanel.setLayout(new GridLayout(0, 1, 0, 4));
-		
-		JMenuBar menuBar = new JMenuBar();
-		frmDigiLaun.setJMenuBar(menuBar);
-		
-		chooseFromYearMnc = new JMenu("制作時期から選ぶ(C)");
-		chooseFromYearMnc.setMnemonic('C');
-		menuBar.add(chooseFromYearMnc);
+		GridBagLayout gbl_indexPanel = new GridBagLayout();
+		gbl_indexPanel.columnWidths = new int[]{0};
+		gbl_indexPanel.rowHeights = new int[]{0};
+		gbl_indexPanel.columnWeights = new double[]{Double.MIN_VALUE};
+		gbl_indexPanel.rowWeights = new double[]{Double.MIN_VALUE};
+		indexPanel.setLayout(gbl_indexPanel);
 	}
-	
+
 	/**
 	 * 作品集を元に、作品に対応したボタンを
-	 * <code>{@link indexPanel}</code> に登録します。
+	 * <code>{@link #indexPanel}</code> に登録します。
 	 * このメソッドは、イベントディスパッチスレッドからアクセスされます。
 	 */
 	private void initIndexPanel() {
-		// 前のループで処理した作品オブジェクト
-		Work workPrev = null;
-		// ボタンを追加した作品の数
-		//int worksCount = 0;
-		
-		for(Work work : works) {
-			// 前の作品と年度が違えば年度ラベルを追加
-			if(workPrev == null || workPrev.getYear() != work.getYear())
-				makeYearComponents(work.getYear());
-			// ボタンを追加
-			makeWorkButton(work);
-			/*
-			// ボタンの文字列をセット
-			button.setText(work.getName());
-			// アクションキーを追加できればアクションキーを追加
-			if(worksCount < BUTTON_ACTION_KEYS.length()) {
-				char actionKey = BUTTON_ACTION_KEYS.charAt(worksCount);
-				button.setText(button.getText()+"("+actionKey+")");
-				button.setMnemonic(actionKey);
-			}
-			// ボタンのアイコンと、テキストの位置をセット
-			try {
-				button.setIcon(
-					new ImageIcon(imgCache.get(work.getIconPath())));
-				button.setHorizontalTextPosition(SwingConstants.CENTER);
-				button.setVerticalTextPosition(SwingConstants.BOTTOM);
-			}
-			catch(Exception e) {}
-			
-			// サイズを整えて追加
-			button.setPreferredSize(MAIN_COMPONENTS_SIZE);
-			this.indexPanel.add(button);
-			//*/
-			
-			workPrev = work;
-			//++worksCount;
+		// 制作年度ごとの子パネルを追加
+		ListIterator<Work> i = works.listIterator();
+		GridBagLayout gbl = (GridBagLayout)this.indexPanel.getLayout();
+		while(i.hasNext()) {
+			YearWorksPanel panel = new YearWorksPanel(i);
+			GridBagConstraints gbc = gbl.getConstraints(panel);
+
+			gbc.fill = GridBagConstraints.HORIZONTAL;
+			gbc.gridwidth = GridBagConstraints.REMAINDER;
+			gbc.weighty = works.getFirst().getYear() - panel.getYear();
+			gbc.anchor = GridBagConstraints.NORTH;
+
+			gbl.setConstraints(panel, gbc);
+			this.indexPanel.add(panel);
 		}
-		this.indexPanel.repaint();
-		
+		// すべての子コンポーネントのイベントを監視し、キーイベントを処理
+		this.indexPanel.getToolkit().addAWTEventListener(
+				new AWTEventListener() {
+					@Override
+					public void eventDispatched(AWTEvent arg0) {
+						synchronized(arg0) {
+							if(!(arg0.getSource() instanceof Component))
+								return;
+							for(Component c = (Component)arg0.getSource();
+									c != null; c = c.getParent()) {
+								if(c == DigiLaun.this.frmDigiLaun)
+									DigiLaun.this.processKeyCommand(
+											(KeyEvent)arg0);
+							}
+						}
+					}
+				}, AWTEvent.KEY_EVENT_MASK);
+//		this.indexPanel.repaint();
+
 		// コンポーネントの追加が終わったら、
 		// 最後のイベントとしてタイマーリセット処理を入れる
 		this.timer.start();
 	}
 
 	/**
-	 * 制作年度を示すラベルとメニュー項目を
-	 * <code>{@link indexPanel}</code> に追加します。
-	 * @param year 制作年度
-	 */
-	private void makeYearComponents(int year) {
-		// 基本情報を準備
-		final Calendar calendar = Calendar.getInstance();
-		calendar.roll(Calendar.MONTH, -3);
-		final int leftYears = calendar.get(Calendar.YEAR) - year;
-		
-		// アイコンを準備
-		String imgFilename = String.format(
-				"img/LabelBack%s.png", leftYears != 0 ? "Older" : "Newest");
-		Toolkit tk = frmDigiLaun.getToolkit();
-		Image img = tk.getImage(imgFilename).getScaledInstance(
-				-1, DigiLaun.MAIN_COMPONENTS_SIZE.height,
-				Image.SCALE_SMOOTH);
-
-		// ラベルの情報を準備
-		final String labelText = leftYears == 0 ?
-				DigiLaun.NEWEST_TEXT : String.format(DigiLaun.OLDER_TEXT,
-						leftYears == 1 ? "昨年度" :
-							Integer.toString(year) + "年度");
-		final ImageIcon labelIcon = new ImageIcon(img);
-		
-		// メニュー項目の情報を準備
-		final char itemMnemonic =
-				leftYears == 0 ? 'N' : (
-				leftYears == 1 ? 'P' : '\0');
-		final String itemText = labelText + (
-				itemMnemonic != '\0' ? "("+itemMnemonic+")" : "");
-
-		EventQueue.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				// ラベルを追加
-				final JLabel label = new JLabel(labelText);
-
-				Font font = label.getFont();
-				label.setFont(font.deriveFont(font.getSize2D()*4F));
-				label.setIcon(labelIcon);
-				label.setVerticalAlignment(SwingConstants.BOTTOM);
-				label.setHorizontalTextPosition(SwingConstants.TRAILING);
-				label.setVerticalTextPosition(SwingConstants.CENTER);
-				label.setPreferredSize(DigiLaun.MAIN_COMPONENTS_SIZE);
-				indexPanel.add(label);
-				
-				// メニュー項目を追加
-				JMenuItem item = new JMenuItem(itemText);
-				item.setMnemonic(itemMnemonic);
-				item.addActionListener(new ActionListener() {
-					// 項目をクリックしたら
-					@Override
-					public void actionPerformed(ActionEvent arg0) {
-						// 指定した年度ラベルへスクロール
-						/*
-						java.awt.Point p = label.getLocation();
-						p.x = Math.min(p.x,
-								DigiLaun.this.indexPanel.getWidth() -
-								DigiLaun.this.indexScrollPane.
-								getViewport().getWidth());
-						p.y = Math.min(p.y,
-								DigiLaun.this.indexPanel.getHeight() -
-								DigiLaun.this.indexScrollPane.
-								getViewport().getHeight());
-						//*/
-						DigiLaun.this.indexScrollPane.getViewport().
-						setViewPosition(label.getLocation());
- 						DigiLaun.this.indexScrollPane.getViewport().repaint();
-					}
-				});
-				DigiLaun.this.chooseFromYearMnc.add(item);
-			}
-		});
-	}
-
-	/**
-	 * 作品のボタンを <code>{@link indexPanel}</code> に追加します。
-	 * @param work 作品
-	 */
-	private void makeWorkButton(final Work work) {
-		Toolkit tk = frmDigiLaun.getToolkit();
-		// ボタンの大きさにズームしたアイコン画像を作成
-		Image img = tk.getImage(work.getIconPath()).getScaledInstance(
-				-1, DigiLaun.ICON_HEIGHT,
-				Image.SCALE_SMOOTH);
-		final ImageIcon icon = work.getIconPath() != null ?
-				new ImageIcon(img) : null;
-		// ボタンのクリックイベント処理
-		final ActionListener al = new ActionListener() {
-			// ボタンがクリックされたときの処理
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				// 詳細ウィンドウを開く
-/*				JFrame parent;
-				{
-					java.awt.Container container;
-					for(
-							container =
-								((Component)arg0.getSource()).getParent();
-							container != null;
-							container = container.getParent()) {
-						if(container instanceof JFrame) {
-							parent = (JFrame)container;
-							break;
-						}
-					}
-				}
-*/				DetailDialog detailDialog = new DetailDialog(work);
-				detailDialog.setVisible(true);
-			}
-		};
-		// ボタンのキー押下イベントをフレームに透過させる
-		final KeyListener kl = new KeyListener() {
-
-			@Override
-			public void keyPressed(KeyEvent arg0) {
-				DigiLaun.this.frmDigiLaun.dispatchEvent(arg0);
-			}
-
-			@Override
-			public void keyReleased(KeyEvent arg0) {
-				DigiLaun.this.frmDigiLaun.dispatchEvent(arg0);
-			}
-
-			@Override
-			public void keyTyped(KeyEvent arg0) {
-				DigiLaun.this.frmDigiLaun.dispatchEvent(arg0);
-			}
-			
-		};
-		
-		EventQueue.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				// ボタンを追加
-				JButton button = new JButton(work.getName());
-				
-				Font font = button.getFont();
-				button.setFont(font.deriveFont(font.getSize2D()*2F));
-				button.setIcon(icon);
-				button.addActionListener(al);
-				button.addKeyListener(kl);
-				button.setHorizontalAlignment(SwingConstants.LEADING);
-				button.setHorizontalTextPosition(SwingConstants.TRAILING);
-				button.setVerticalTextPosition(SwingConstants.CENTER);
-				button.setPreferredSize(MAIN_COMPONENTS_SIZE);
-				DigiLaun.this.indexPanel.add(button);
-			}
-		});
-	}
-	
-	
-	/**
 	 * タイマーが時間切れになったときのコールバックを提供します。
 	 * @author p10090
 	 *
 	 */
 	private class TimerCallback implements Runnable {
-	/**
-	 * アプリ窓を凍結し、作品を体験できなくします。
-	 * アプリ作品を体験中であれば、そのアプリを終了します。
-	 */
+		/**
+		 * アプリ窓を凍結し、作品を体験できなくします。
+		 * アプリ作品を体験中であれば、そのアプリを終了します。
+		 */
 		@Override
 		public void run() {
 			// メッセージを表示
-			javax.swing.JOptionPane.showMessageDialog(DigiLaun.this.frmDigiLaun,
+			javax.swing.JOptionPane.showMessageDialog(
+					DigiLaun.this.frmDigiLaun,
 	                DigiLaun.TIMEUP_TEXT);
 			// ボタン等を無効化
 			setButtonsEnabled(false);
 		}
 	}
-	
+
 	/**
 	 * タイマーをリセットし、アプリ窓の凍結を解除します。
 	 */
@@ -515,7 +344,7 @@ public class DigiLaun {
 		}
 		catch(InterruptedException e) {
 		}
-		
+
 		// ウィンドウを再描画して表示
 		DigiLaun.this.frmDigiLaun.repaint();
 		DigiLaun.this.frmDigiLaun.setVisible(true);
@@ -523,7 +352,7 @@ public class DigiLaun {
 		// タイマーを始める
 		timer.start();
 	}
-	
+
 	/**
 	 * ボタン等の有効・無効をセットします。
 	 * @param b ボタン等の有効状態
@@ -533,4 +362,57 @@ public class DigiLaun {
 			c.setEnabled(b);
 	}
 
+	/**
+	 * 隠しキー操作を処理します。
+	 * @param e
+	 */
+	private void processKeyCommand(KeyEvent e) {
+		// 頒布モードなら無視
+		if(DigiLaun.getDistributionMode())
+			return;
+		// 終了   Ctrl+Shift+2
+		if(e.isControlDown() &&
+				e.isShiftDown() &&
+				e.getKeyCode() == KeyEvent.VK_2)
+			//System.exit(0);
+			DigiLaun.this.frmDigiLaun.dispose();
+		// リセット   Ctrl+Shift+-
+		if(e.isControlDown() &&
+				e.isShiftDown() &&
+				e.getKeyCode() == KeyEvent.VK_MINUS)
+			DigiLaun.this.resetFrame();
+	}
+
+	/**
+	 * 全画面モードかどうかを調べます。
+	 * @return 全画面モードなら真
+	 */
+	private boolean getFullScreenMode() {
+		synchronized(this) {
+			return gd == null || gd.getFullScreenWindow() == frmDigiLaun;
+		}
+	}
+
+	/**
+	 * 全画面モードをセットします。
+	 * @param status 真にすると全画面表示になる
+	 */
+	private void setFullScreenMode(final boolean status) {
+		// 画面デバイスが未取得なら取得
+		synchronized(this) {
+			if(gd == null) {
+				if(ge == null)
+					ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+				gd = ge.getDefaultScreenDevice();
+			}
+		}
+//		EventQueue.invokeLater(new Runnable() {
+//			@Override
+//			public void run() {
+				frmDigiLaun.setResizable(!status);
+				frmDigiLaun.setUndecorated(!status);
+				gd.setFullScreenWindow(status ? frmDigiLaun : null);
+//			}
+//		});
+	}
 }

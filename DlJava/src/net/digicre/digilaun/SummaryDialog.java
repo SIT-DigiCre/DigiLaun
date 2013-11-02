@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import net.digicre.digilaun.work.Work;
 import java.awt.event.ActionListener;
@@ -29,6 +30,14 @@ class SummaryDialog extends JDialog {
 			"このさくひんは たいけんできないよ";
 
 	/**
+	 * KILLボタン押下時の強制終了確認メッセージです。
+	 */
+	protected static final Object KILL_CONFIRM_MESSAGE =
+			"アプリを強制終了すると\n" +
+			"アプリがこわれてしまうかもしれないよ!\n\n" +
+			"強制終了して, いますぐもどりますか?";
+
+	/**
 	 * 作品の詳しい情報が見えなかったときのエラーメッセージです。
 	 */
 	protected static final Object INFO_ERROR_MESSAGE =
@@ -45,6 +54,9 @@ class SummaryDialog extends JDialog {
 	 */
 	private static final String KILL_BUTTON_TEXT = "KILL";
 
+//	private StreamConnector stdinConnector;
+	private StreamConnector stdoutConnector;
+	private StreamConnector stderrConnector;
 	private Work work;
 	private Process process;
 	private ProcessLogger logger;
@@ -62,14 +74,21 @@ class SummaryDialog extends JDialog {
 		@Override
 		public void run() {
 			putLog(ProcessLogger.OpenStatus.Started);
-			try {
-				SummaryDialog.this.process.waitFor();
-			} catch (InterruptedException e) {
+			SummaryDialog.this.connectProcessStream();
+			while(true) {
+				try {
+					SummaryDialog.this.process.waitFor();
+				} catch (InterruptedException e) {
+				}
+				if(SummaryDialog.this.process != null) try {
+					putLog(SummaryDialog.this.process.exitValue() != 0
+						? ProcessLogger.OpenStatus.ExitFailed
+						: ProcessLogger.OpenStatus.ExitSuccessful);
+					SummaryDialog.this.disconnectProcessStream();
+					break;
+				}
+				catch(IllegalThreadStateException e) {}
 			}
-			if(SummaryDialog.this.process != null)
-				putLog(SummaryDialog.this.process.exitValue() != 0
-					? ProcessLogger.OpenStatus.ExitFailed
-					: ProcessLogger.OpenStatus.ExitSuccessful);
 			SummaryDialog.this.dispatchEvent(new WindowEvent(
 					SummaryDialog.this, WindowEvent.WINDOW_CLOSING));
 		}
@@ -147,13 +166,31 @@ class SummaryDialog extends JDialog {
 								process.exitValue();
 							}
 							catch(IllegalThreadStateException ex) {
-								synchronized(SummaryDialog.this) {
-									// 強制終了
-									SummaryDialog.this.process.destroy();
-									SummaryDialog.this.process = null;
+								// 強制終了
+								if(JOptionPane.showConfirmDialog(
+										SummaryDialog.this,
+										KILL_CONFIRM_MESSAGE,
+										"Select an Option",
+										JOptionPane.YES_NO_OPTION,
+										JOptionPane.WARNING_MESSAGE
+										) == JOptionPane.YES_OPTION) {
+									synchronized(SummaryDialog.this) {
+										try {
+											SummaryDialog.this.process.
+											getOutputStream().close();
+											SummaryDialog.this.process.
+											getInputStream().close();
+											SummaryDialog.this.process.
+											getErrorStream().close();
+										} catch (IOException ioe) {
+											throw new RuntimeException(ioe);
+										}
+										SummaryDialog.this.process.destroy();
+										SummaryDialog.this.process = null;
+									}
+									SummaryDialog.this.putLog(
+											ProcessLogger.OpenStatus.Killed);
 								}
-								SummaryDialog.this.putLog(
-										ProcessLogger.OpenStatus.Killed);
 							}
 						}
 						// 閉じる
@@ -277,5 +314,27 @@ class SummaryDialog extends JDialog {
 		}
 		catch(NullPointerException e) {
 		}
+	}
+
+	private void connectProcessStream() {
+//		(stdinConnector = new StreamConnector(
+//				System.in, this.process.getOutputStream(), 1)
+//		).connect();
+		(stdoutConnector = new StreamConnector(
+				this.process.getInputStream(), System.out, 1)
+		).connect();
+		(stderrConnector = new StreamConnector(
+				this.process.getErrorStream(), System.err, 1)
+		).connect();
+	}
+
+	private void disconnectProcessStream() {
+//		stdinConnector.disconnect();
+//		stdoutConnector.disconnect();
+//		stderrConnector.disconnect();
+		while(stdoutConnector.isConnecting())
+			Thread.yield();
+		while(stderrConnector.isConnecting())
+			Thread.yield();
 	}
 }

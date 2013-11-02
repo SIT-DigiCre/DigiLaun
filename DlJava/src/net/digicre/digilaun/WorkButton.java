@@ -2,7 +2,6 @@ package net.digicre.digilaun;
 
 import java.awt.Dimension;
 import java.awt.Image;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 
 import javax.swing.ImageIcon;
@@ -47,15 +46,14 @@ class WorkButton extends JButton {
 			synchronized(WorkButton.this.relatedWork) {
 				try {
 					// アイコンを設定
-					Toolkit tk = WorkButton.this.getToolkit();
-
 					WorkButton.this.setIcon(new ImageIcon(
-							tk.getImage(relatedWork.getIconPath()).
+							ImageCache.getInstance().getImage(
+									relatedWork.getIconPath()).
 							getScaledInstance(
 									-1, ICON_HEIGHT,
 									Image.SCALE_SMOOTH)));
 				}
-				catch(RuntimeException e) {
+				catch(Exception e) {
 					WorkButton.this.setIcon(null);
 				}
 				// イベントを登録

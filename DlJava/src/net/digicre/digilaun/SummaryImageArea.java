@@ -56,7 +56,14 @@ public class SummaryImageArea extends JComponent implements ComponentListener {
 		if(this.work == work)
 			return;
 		this.work = work;
-		this.baseImage = this.getToolkit().createImage(work.getPicturePath());
+		try {
+			this.baseImage =
+					ImageCache.getInstance().getImage(work.getPicturePath());
+		}
+		catch(java.io.IOException e) {
+			createAlternativeImage();
+			this.baseImage = alternativeImage;
+		}
 	}
 
 	@Override
@@ -108,6 +115,8 @@ public class SummaryImageArea extends JComponent implements ComponentListener {
 				// 別のイメージをロード
 				createAlternativeImage();
 				this.baseImage = alternativeImage;
+				this.repaint();
+				return;
 			}
 		}
 		// 拡大後の寸法を計算

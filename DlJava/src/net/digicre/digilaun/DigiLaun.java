@@ -278,6 +278,18 @@ public class DigiLaun {
 			gbl.setConstraints(panel, gbc);
 			this.indexPanel.add(panel);
 		}
+		{
+			JLabel blank = new JLabel();
+			GridBagConstraints gbc = gbl.getConstraints(blank);
+
+			gbc.fill = GridBagConstraints.HORIZONTAL;
+			gbc.gridwidth = GridBagConstraints.REMAINDER;
+			gbc.weighty = Integer.MAX_VALUE+1.0;
+			gbc.anchor = GridBagConstraints.NORTH;
+
+			gbl.setConstraints(blank, gbc);
+			this.indexPanel.add(blank);
+		}
 		// すべての子コンポーネントのイベントを監視し、キーイベントを処理
 		this.indexPanel.getToolkit().addAWTEventListener(
 				new AWTEventListener() {
@@ -285,6 +297,8 @@ public class DigiLaun {
 					public void eventDispatched(AWTEvent arg0) {
 						synchronized(arg0) {
 							if(!(arg0.getSource() instanceof Component))
+								return;
+							if(!DigiLaun.this.frmDigiLaun.isActive())
 								return;
 							for(Component c = (Component)arg0.getSource();
 									c != null; c = c.getParent()) {

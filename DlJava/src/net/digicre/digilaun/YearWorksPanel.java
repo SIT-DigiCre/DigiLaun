@@ -55,6 +55,9 @@ public class YearWorksPanel extends JPanel {
 	private JToggleButton expandToggleButton;
 	private JPanel labelPanel;
 	private JSeparator separator;
+	private JPanel panel;
+	private JLabel label;
+	private JLabel label_1;
 
 	/**
 	 * Create the panel.
@@ -80,16 +83,30 @@ public class YearWorksPanel extends JPanel {
 
 		yearLabel = new JLabel("n年度の作品");
 		yearLabel.setIcon(null);
-		yearLabel.setFont(yearLabel.getFont().deriveFont(24f));
+		yearLabel.setFont(yearLabel.getFont().deriveFont(48f));
 		labelPanel.add(yearLabel);
 
 		buttonsPanel = new JPanel();
 		add(buttonsPanel, BorderLayout.CENTER);
 		buttonsPanel.setLayout(new GridLayout(0, 1, 5, 5));
 		
+		panel = new JPanel();
+		add(panel, BorderLayout.WEST);
+		panel.setLayout(new BorderLayout(0, 0));
+		
 		separator = new JSeparator();
+		panel.add(separator);
 		separator.setOrientation(SwingConstants.VERTICAL);
-		add(separator, BorderLayout.WEST);
+		
+		label = new JLabel("");
+		label.setPreferredSize(new Dimension(5, 0));
+		label.setMinimumSize(new Dimension(5, 0));
+		panel.add(label, BorderLayout.WEST);
+		
+		label_1 = new JLabel("");
+		label_1.setPreferredSize(new Dimension(5, 0));
+		label_1.setMinimumSize(new Dimension(5, 0));
+		panel.add(label_1, BorderLayout.EAST);
 
 	}
 

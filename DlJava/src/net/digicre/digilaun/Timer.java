@@ -23,7 +23,7 @@ class Timer implements Runnable {
 	/**
 	 * ラベルの更新周期 [ms] です。
 	 */
-	private static final long UPDATE_INTERVAL = 60000L;
+	private static final long UPDATE_INTERVAL = 10000L;
 	/**
 	 * テキストの更新間隔 [ms] です。
 	 */

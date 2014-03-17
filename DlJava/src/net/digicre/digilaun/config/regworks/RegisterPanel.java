@@ -13,41 +13,40 @@ import java.awt.Insets;
 import javax.swing.JButton;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+import net.digicre.digilaun.work.WritableWork;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.Dimension;
 
 @SuppressWarnings("serial")
 public class RegisterPanel extends JPanel {
 	/**
 	 * 起動ファイルとして標準で受け入れるファイルのフィルターです。
 	 */
-	public static final FileNameExtensionFilter[] pathFileFilters = {
-		new FileNameExtensionFilter("Windows アプリケーション (*.exe)",
+	public static final FileFilter[] pathFileFilters = {
+		new FileNameExtensionFilter(
+				"Windows アプリケーション (*.exe)",
 				"exe"),
-		new FileNameExtensionFilter("コマンドスクリプト (*.bat; *.sh)",
+		new FileNameExtensionFilter(
+				"コマンドスクリプト (*.bat; *.sh)",
 				"bat", "sh"),
 		null,
 	};
 	/**
-	 * アイコンとして標準で受け入れるファイルのフィルターです。
+	 * 画像として標準で受け入れるファイルのフィルターです。
 	 */
-	public static final FileNameExtensionFilter[] iconPathFileFilters = {
-		new FileNameExtensionFilter("画像ファイル (*.gif; *.jpg; *.jpeg; *.png)",
-				"gif", "jpg", "jpeg", "png"),
+	public static final FileFilter[] imgPathFileFilters = {
+		new FileNameExtensionFilter(
+				"画像ファイル (*.GIF; *.JFIF; *.jpg; *.JPEG; *.jpe; *.PNG)",
+				"GIF", "JFIF", "jpg", "JPEG", "jpe", "PNG"),
 	};
 	/**
-	 * 概要イメージとして標準で受け入れるファイルのフィルターです。
+	 * テキストとして標準で受け入れるファイルのフィルターです。
 	 */
-	public static final FileNameExtensionFilter[] picturePathFileFilters = {
-		new FileNameExtensionFilter("画像ファイル (*.gif; *.jpg; *.jpeg; *.png)",
-				"gif", "jpg", "jpeg", "png"),
-	};
-	/**
-	 * 詳細テキストとして標準で受け入れるファイルのフィルターです。
-	 */
-	public static final FileNameExtensionFilter[] textPathFileFilters = {
-		new FileNameExtensionFilter("文書ファイル (*.txt; *.UTF; *.HTML; *.htm)",
+	public static final FileFilter[] textPathFileFilters = {
+		new FileNameExtensionFilter(
+				"文書ファイル (*.txt; *.UTF; *.HTML; *.htm)",
 				"txt", "UTF", "HTML", "htm"),
 		null,
 	};
@@ -60,8 +59,7 @@ public class RegisterPanel extends JPanel {
 	private JTextField nameTextField;
 	private JTextField pathTextField;
 	private JTextField iconPathTextField;
-	private JTextField picturePathTextField;
-	private JTextField argsTextField;
+	private JTextField imagePathTextField;
 	private JTextField textPathTextField;
 	private JSpinner yearSpinner;
 	private JTextField inputTextField;
@@ -70,12 +68,11 @@ public class RegisterPanel extends JPanel {
 	 * Create the panel.
 	 */
 	public RegisterPanel() {
-		setPreferredSize(new Dimension(320, 482));
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{450, 0, 0};
-		gridBagLayout.rowHeights = new int[]{15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 0};
+		gridBagLayout.rowHeights = new int[]{15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 0};
 		gridBagLayout.columnWeights = new double[]{1.0, 0.0, Double.MIN_VALUE};
-		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		setLayout(gridBagLayout);
 		
 		JLabel label = new JLabel("作品名");
@@ -90,7 +87,6 @@ public class RegisterPanel extends JPanel {
 		
 		nameTextField = new JTextField();
 		GridBagConstraints gbc_nameTextField = new GridBagConstraints();
-		gbc_nameTextField.anchor = GridBagConstraints.NORTH;
 		gbc_nameTextField.gridwidth = 2;
 		gbc_nameTextField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_nameTextField.insets = new Insets(0, 0, 5, 0);
@@ -110,9 +106,9 @@ public class RegisterPanel extends JPanel {
 		add(label_1, gbc_label_1);
 		
 		yearSpinner = new JSpinner();
-		yearSpinner.setModel(new SpinnerNumberModel(new Short((short) 2013), new Short((short) 2003), null, new Short((short) 1)));
+		yearSpinner.setModel(new SpinnerNumberModel(new Integer(2013), new Integer(2003), null, new Integer(1)));
 		GridBagConstraints gbc_yearSpinner = new GridBagConstraints();
-		gbc_yearSpinner.anchor = GridBagConstraints.NORTHWEST;
+		gbc_yearSpinner.anchor = GridBagConstraints.WEST;
 		gbc_yearSpinner.insets = new Insets(0, 0, 5, 5);
 		gbc_yearSpinner.gridx = 0;
 		gbc_yearSpinner.gridy = 3;
@@ -131,7 +127,6 @@ public class RegisterPanel extends JPanel {
 		inputTextField = new JTextField();
 		inputTextField.setText("キーボードまたはゲームパッド");
 		GridBagConstraints gbc_inputTextField = new GridBagConstraints();
-		gbc_inputTextField.anchor = GridBagConstraints.NORTH;
 		gbc_inputTextField.gridwidth = 2;
 		gbc_inputTextField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_inputTextField.insets = new Insets(0, 0, 5, 0);
@@ -152,7 +147,6 @@ public class RegisterPanel extends JPanel {
 		
 		pathTextField = new JTextField();
 		GridBagConstraints gbc_pathTextField = new GridBagConstraints();
-		gbc_pathTextField.anchor = GridBagConstraints.NORTH;
 		gbc_pathTextField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_pathTextField.insets = new Insets(0, 0, 5, 5);
 		gbc_pathTextField.gridx = 0;
@@ -168,33 +162,11 @@ public class RegisterPanel extends JPanel {
 			}
 		});
 		GridBagConstraints gbc_pathReferButton = new GridBagConstraints();
-		gbc_pathReferButton.anchor = GridBagConstraints.NORTH;
 		gbc_pathReferButton.fill = GridBagConstraints.HORIZONTAL;
 		gbc_pathReferButton.insets = new Insets(0, 0, 5, 0);
 		gbc_pathReferButton.gridx = 1;
 		gbc_pathReferButton.gridy = 7;
 		add(pathReferButton, gbc_pathReferButton);
-		
-		JLabel label_5 = new JLabel("コマンドライン引数 (上級者向けオプション)");
-		GridBagConstraints gbc_label_5 = new GridBagConstraints();
-		gbc_label_5.gridwidth = 2;
-		gbc_label_5.anchor = GridBagConstraints.NORTH;
-		gbc_label_5.fill = GridBagConstraints.HORIZONTAL;
-		gbc_label_5.insets = new Insets(0, 0, 5, 0);
-		gbc_label_5.gridx = 0;
-		gbc_label_5.gridy = 8;
-		add(label_5, gbc_label_5);
-		
-		argsTextField = new JTextField();
-		GridBagConstraints gbc_argsTextField = new GridBagConstraints();
-		gbc_argsTextField.anchor = GridBagConstraints.NORTH;
-		gbc_argsTextField.gridwidth = 2;
-		gbc_argsTextField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_argsTextField.insets = new Insets(0, 0, 5, 0);
-		gbc_argsTextField.gridx = 0;
-		gbc_argsTextField.gridy = 9;
-		add(argsTextField, gbc_argsTextField);
-		argsTextField.setColumns(10);
 		
 		JLabel label_3 = new JLabel("アイコン");
 		GridBagConstraints gbc_label_3 = new GridBagConstraints();
@@ -203,16 +175,15 @@ public class RegisterPanel extends JPanel {
 		gbc_label_3.fill = GridBagConstraints.HORIZONTAL;
 		gbc_label_3.insets = new Insets(0, 0, 5, 0);
 		gbc_label_3.gridx = 0;
-		gbc_label_3.gridy = 10;
+		gbc_label_3.gridy = 8;
 		add(label_3, gbc_label_3);
 		
 		iconPathTextField = new JTextField();
 		GridBagConstraints gbc_iconPathTextField = new GridBagConstraints();
-		gbc_iconPathTextField.anchor = GridBagConstraints.NORTH;
 		gbc_iconPathTextField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_iconPathTextField.insets = new Insets(0, 0, 5, 5);
 		gbc_iconPathTextField.gridx = 0;
-		gbc_iconPathTextField.gridy = 11;
+		gbc_iconPathTextField.gridy = 9;
 		add(iconPathTextField, gbc_iconPathTextField);
 		iconPathTextField.setColumns(10);
 		
@@ -220,14 +191,13 @@ public class RegisterPanel extends JPanel {
 		iconPathReferButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				RegisterPanel.this.referFile(
-						iconPathFileFilters, iconPathTextField);
+						imgPathFileFilters, iconPathTextField);
 			}
 		});
 		GridBagConstraints gbc_iconPathReferButton = new GridBagConstraints();
-		gbc_iconPathReferButton.anchor = GridBagConstraints.NORTH;
 		gbc_iconPathReferButton.insets = new Insets(0, 0, 5, 0);
 		gbc_iconPathReferButton.gridx = 1;
-		gbc_iconPathReferButton.gridy = 11;
+		gbc_iconPathReferButton.gridy = 9;
 		add(iconPathReferButton, gbc_iconPathReferButton);
 		
 		JLabel label_4 = new JLabel("作品の雰囲気や遊び方などを伝える概要イメージ");
@@ -237,31 +207,29 @@ public class RegisterPanel extends JPanel {
 		gbc_label_4.fill = GridBagConstraints.HORIZONTAL;
 		gbc_label_4.insets = new Insets(0, 0, 5, 0);
 		gbc_label_4.gridx = 0;
-		gbc_label_4.gridy = 12;
+		gbc_label_4.gridy = 10;
 		add(label_4, gbc_label_4);
 		
-		picturePathTextField = new JTextField();
+		imagePathTextField = new JTextField();
 		GridBagConstraints gbc_picturePathTextField = new GridBagConstraints();
-		gbc_picturePathTextField.anchor = GridBagConstraints.NORTH;
 		gbc_picturePathTextField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_picturePathTextField.insets = new Insets(0, 0, 5, 5);
 		gbc_picturePathTextField.gridx = 0;
-		gbc_picturePathTextField.gridy = 13;
-		add(picturePathTextField, gbc_picturePathTextField);
-		picturePathTextField.setColumns(10);
+		gbc_picturePathTextField.gridy = 11;
+		add(imagePathTextField, gbc_picturePathTextField);
+		imagePathTextField.setColumns(10);
 		
 		JButton picturePathReferButton = new JButton("参照...");
 		picturePathReferButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				RegisterPanel.this.referFile(
-						picturePathFileFilters, picturePathTextField);
+						imgPathFileFilters, imagePathTextField);
 			}
 		});
 		GridBagConstraints gbc_picturePathReferButton = new GridBagConstraints();
-		gbc_picturePathReferButton.anchor = GridBagConstraints.NORTH;
 		gbc_picturePathReferButton.insets = new Insets(0, 0, 5, 0);
 		gbc_picturePathReferButton.gridx = 1;
-		gbc_picturePathReferButton.gridy = 13;
+		gbc_picturePathReferButton.gridy = 11;
 		add(picturePathReferButton, gbc_picturePathReferButton);
 		
 		JLabel label_6 = new JLabel("クレジットや権利情報などをまとめた詳細テキスト");
@@ -271,16 +239,15 @@ public class RegisterPanel extends JPanel {
 		gbc_label_6.fill = GridBagConstraints.HORIZONTAL;
 		gbc_label_6.insets = new Insets(0, 0, 5, 0);
 		gbc_label_6.gridx = 0;
-		gbc_label_6.gridy = 14;
+		gbc_label_6.gridy = 12;
 		add(label_6, gbc_label_6);
 		
 		textPathTextField = new JTextField();
 		GridBagConstraints gbc_textPathTextField = new GridBagConstraints();
-		gbc_textPathTextField.anchor = GridBagConstraints.NORTH;
 		gbc_textPathTextField.insets = new Insets(0, 0, 0, 5);
 		gbc_textPathTextField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textPathTextField.gridx = 0;
-		gbc_textPathTextField.gridy = 15;
+		gbc_textPathTextField.gridy = 13;
 		add(textPathTextField, gbc_textPathTextField);
 		textPathTextField.setColumns(10);
 		
@@ -292,9 +259,8 @@ public class RegisterPanel extends JPanel {
 			}
 		});
 		GridBagConstraints gbc_textPathReferButton = new GridBagConstraints();
-		gbc_textPathReferButton.anchor = GridBagConstraints.NORTH;
 		gbc_textPathReferButton.gridx = 1;
-		gbc_textPathReferButton.gridy = 15;
+		gbc_textPathReferButton.gridy = 13;
 		add(textPathReferButton, gbc_textPathReferButton);
 
 	}
@@ -334,5 +300,29 @@ public class RegisterPanel extends JPanel {
 	 */
 	boolean isInputValid() {
 		return ! this.pathTextField.getText().isEmpty();
+	}
+
+	/**
+	 * 入力データを指定した作品オブジェクトに適用します。
+	 * @param work 入力データを適用する作品オブジェクト
+	 */
+	void applyToWork(WritableWork work) {
+		work.setName(this.nameTextField.getText());
+		work.setYear((Integer)this.yearSpinner.getValue());
+		work.setPath(this.pathTextField.getText());
+		work.setIconPath(this.iconPathTextField.getText());
+		work.setSummaryImagePath(this.imagePathTextField.getText());
+		work.setDetailTextPath(this.textPathTextField.getText());
+		work.setInputDeviceName(this.inputTextField.getText());
+	}
+
+	/**
+	 * 入力データを元に新しい作品オブジェクトを作成します。
+	 * @return 入力データを適用された新しい作品オブジェクト
+	 */
+	WritableWork createWork() {
+		WritableWork work = new WritableWork();
+		this.applyToWork(work);
+		return work;
 	}
 }

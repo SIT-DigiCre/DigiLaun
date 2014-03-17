@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.ListIterator;
 import java.util.regex.Pattern;
@@ -13,7 +14,6 @@ import java.util.regex.Pattern;
 import javax.swing.JFrame;
 
 import net.digicre.digilaun.work.Work;
-import net.digicre.digilaun.work.WorkList;
 import java.awt.BorderLayout;
 import javax.swing.JLabel;
 import java.awt.Font;
@@ -31,6 +31,7 @@ import java.awt.event.KeyEvent;
 import java.awt.Color;
 import java.awt.Rectangle;
 import java.awt.GridBagLayout;
+import java.awt.CardLayout;
 
 /**
  * Digi Laun のエントリーポイントと、コマンドライン引数の取得機能を提供します。
@@ -45,28 +46,12 @@ public class DigiLaun {
 	private static final long RESET_HIDING_TIME = 2000L;
 
 	/**
-	 * XML ファイル読み込み失敗時に表示するメッセージです。
-	 */
-	private static final String WORKS_READING_FAILURE_MESSAGE =
-			"作品ファイルの読み込みに失敗しました。";
-
-	/**
 	 * 頒布モード OFF の時に閉じようとしたとき、表示するメッセージです。
 	 */
 	private static final String CANNOT_CLOSE_MESSAGE =
 			"やめたいときは,\n" +
 			"デジクリのふだをかけた人に\n" +
 			"こえをかけてください.";
-
-	/**
-	 * 最新作を示すラベルやメニュー項目のテキストです。
-	 */
-	static final String NEWEST_TEXT = "最新作";
-
-	/**
-	 * 過去作を示すラベルやメニュー項目のテキストです。
-	 */
-	static final String OLDER_TEXT = "%sの作品";
 
 	/**
 	 * 頒布モード OFF で長時間遊び続けたときのテキストです。
@@ -82,9 +67,9 @@ public class DigiLaun {
 	//*/
 
 	/**
-	 * 作品の集合オブジェクトです。
+	 * Digi Laun の環境設定です。
 	 */
-	WorkList works = new WorkList();
+	static final Config config = new Config();
 
 	/**
 	 * コマンドライン引数です。
@@ -92,29 +77,24 @@ public class DigiLaun {
 	private static String[] args = null;
 
 	/**
-	 * 頒布モードのフラグです。
-	 * 真の時は隠しコマンドを無効化し、普通に閉じて終了できるようになります。
-	 */
-	private static boolean distributionMode = false;
-
-	/**
 	 * 連続使用時間を監視するタイマーです。
 	 */
 	private Timer timer;
 
-	/**
-	 * グラフィックス環境オブジェクトです。全画面表示に使います。
-	 */
-	GraphicsEnvironment ge = null;
-	/**
-	 * 全画面表示に使うモニターです。
-	 */
-	GraphicsDevice gd = null;
+//	/**
+//	 * グラフィックス環境オブジェクトです。全画面表示に使います。
+//	 */
+//	GraphicsEnvironment ge = null;
+//	/**
+//	 * 全画面表示に使うモニターです。
+//	 */
+//	GraphicsDevice gd = null;
 
 	private JFrame frmDigiLaun;
 	private JPanel indexPanel;
 	private JLabel headLabel;
 	private JScrollPane indexScrollPane;
+	private JPanel mainPanel;
 
 	/**
 	 * アプリケーションを起動します。
@@ -123,32 +103,33 @@ public class DigiLaun {
 	public static void main(String[] args) {
 		// 引数を処理
 		DigiLaun.args = args;
-		DigiLaun.distributionMode = true;
 
-		for(String arg : args) {
-			// "/DISPLAY", "--display" オプションがなければ頒布モード 
-			if(Pattern.compile(
-					"\\A(?:/|\\-\\-)display\\z", Pattern.CASE_INSENSITIVE
-					).matcher(arg).matches())
-				DigiLaun.distributionMode = false;
-		}
-		java.awt.EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-//					javax.swing.UIManager.setLookAndFeel(
-//							javax.swing.UIManager.
-//							getSystemLookAndFeelClassName());
-					DigiLaun window = new DigiLaun();
-//					// 展示モードなら全画面
-//					if(!DigiLaun.getDistributionMode())
-//						window.setFullScreenMode(true);
-					window.frmDigiLaun.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+//		for(String arg : args) {
+//			// "/DISPLAY", "--display" オプションがあれば展示モード 
+//			if(Pattern.compile(
+//					"\\A(?:/|\\-\\-)display\\z", Pattern.CASE_INSENSITIVE
+//					).matcher(arg).matches())
+//				config.setMode(Config.Mode.DISPLAY);
+//			// "/DISTRIBUTION", "--distribution" オプションがあれば頒布モード 
+//			if(Pattern.compile(
+//					"\\A(?:/|\\-\\-)distribution\\z", Pattern.CASE_INSENSITIVE
+//					).matcher(arg).matches())
+//				config.setMode(Config.Mode.DISTRIBUTION);
+//		}
+
+		// スプラッシュを表示してコンフィグ読み込み
+		SplashFrame splashFrame = new SplashFrame();
+		splashFrame.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosed(WindowEvent e) {
+				// スプラッシュが閉じられたらメインフレームを表示
+				DigiLaun window = new DigiLaun();
+				window.setFullScreenMode(
+						DigiLaun.config.getMode() == Config.Mode.DISPLAY);
+				window.frmDigiLaun.setVisible(true);
 			}
 		});
-
+		splashFrame.setVisible(true);
 	}
 
 	/**
@@ -160,16 +141,6 @@ public class DigiLaun {
 	}
 
 	/**
-	 * 頒布モードかどうかを取得します。
-	 * <br>頒布モードが入っていると、 Digi Laun を
-	 * [閉じる] ボタンで終了できます。
-	 * @return 頒布モードなら真
-	 */
-	public static boolean getDistributionMode() {
-		return distributionMode;
-	}
-
-	/**
 	 * Create the application.
 	 */
 	public DigiLaun() {
@@ -178,6 +149,7 @@ public class DigiLaun {
 
 	/**
 	 * Initialize the contents of the frame.
+	 * @wbp.parser.entryPoint
 	 */
 	private void initialize() {
 		frmDigiLaun = new JFrame();
@@ -186,64 +158,36 @@ public class DigiLaun {
 		frmDigiLaun.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowOpened(WindowEvent e) {
-				new Thread() {
-					public void run() {
-						try {
-							timer = new Timer(headLabel, new TimerCallback());
-							works.readFromXMLDocument();
-						} catch (Exception ex) {
-							String str = String.format("%s\n\n%s",
-									DigiLaun.WORKS_READING_FAILURE_MESSAGE,
-									ex.getLocalizedMessage());
-
-							for(StackTraceElement st : ex.getStackTrace()) {
-								str += "\n        at " + st.toString();
-							}
-							javax.swing.JOptionPane.showMessageDialog(
-									frmDigiLaun, str);
-							frmDigiLaun.dispose();
-							return;
-							//System.exit(1);
-						}
-						DigiLaun.this.initIndexPanel();
-					}
-				}.start();
+				DigiLaun.this.onWindowOpened();
 			}
 			@Override
 			public void windowClosing(WindowEvent arg0) {
-				// 頒布モードなら普通に閉じる
-				if(DigiLaun.getDistributionMode()) {
-					arg0.getWindow().dispose();
-					return;
-				}
-				// そうでなければメッセージ表示
-				javax.swing.JOptionPane.showMessageDialog(arg0.getWindow(),
-						DigiLaun.CANNOT_CLOSE_MESSAGE);
+				DigiLaun.this.onWindowClosing();
 			}
 			@Override
 			public void windowClosed(WindowEvent arg0) {
-				if(getFullScreenMode())
-					DigiLaun.this.setFullScreenMode(false);
-				timer.stop();
-//				System.exit(0);
+				DigiLaun.this.onWindowClosed();
 			}
 		});
 		frmDigiLaun.setBounds(100, 100, 640, 480);
 		frmDigiLaun.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		frmDigiLaun.getContentPane().setLayout(new BorderLayout(0, 0));
-
-		headLabel = new JLabel("読み込みちふ…");
+		frmDigiLaun.getContentPane().setLayout(new CardLayout(0, 0));
+		
+		mainPanel = new JPanel();
+		frmDigiLaun.getContentPane().add(mainPanel, "name_1386749345977117000");
+		mainPanel.setLayout(new BorderLayout(0, 0));
+		
+		headLabel = new JLabel((String) null);
+		mainPanel.add(headLabel, BorderLayout.NORTH);
 		headLabel.setPreferredSize(new Dimension(91, 70));
 		headLabel.setHorizontalTextPosition(SwingConstants.CENTER);
 		headLabel.setIcon(new ImageIcon("img/Logo.png"));
-		headLabel.setBackground(Color.WHITE);
 		headLabel.setOpaque(true);
 		headLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		headLabel.setFont(headLabel.getFont().deriveFont(headLabel.getFont().getStyle() | Font.BOLD, 23f));
-		frmDigiLaun.getContentPane().add(headLabel, BorderLayout.NORTH);
 
 		indexScrollPane = new JScrollPane();
-		frmDigiLaun.getContentPane().add(indexScrollPane, BorderLayout.CENTER);
+		mainPanel.add(indexScrollPane, BorderLayout.CENTER);
 		indexScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		indexScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
@@ -255,6 +199,92 @@ public class DigiLaun {
 		gbl_indexPanel.columnWeights = new double[]{Double.MIN_VALUE};
 		gbl_indexPanel.rowWeights = new double[]{Double.MIN_VALUE};
 		indexPanel.setLayout(gbl_indexPanel);
+
+		JLabel splashLabel = new JLabel((String) null);
+		splashLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		splashLabel.setFont(splashLabel.getFont().deriveFont(23f));
+		splashLabel.setIcon(new ImageIcon("img/Splash.png"));
+		splashLabel.setOpaque(true);
+		splashLabel.setBackground(Color.WHITE);
+		frmDigiLaun.getContentPane().add(splashLabel, "name_1386749295936071000");
+	}
+
+	/**
+	 * ウィンドウが開かれたときのイベント処理です。
+	 */
+	private void onWindowOpened() {
+		initIndexPanel();
+//		// 別のスレッドで実行
+//		new Thread() {
+//			@SuppressWarnings("deprecation")
+//			@Override
+//			public void run() {
+//				try {
+//					timer = new Timer(headLabel, new TimerCallback());
+//					try {
+//						config.readFromXMLDocument();
+//					}
+//					catch(Exception rex1) {
+//						try {
+//							config.getWorks().readFromXMLDocument();
+//						}
+//						catch(Throwable rex2) {
+//							throw rex1;
+//						}
+//					}
+//				} catch (final Exception ex) {
+//					java.awt.EventQueue.invokeLater(new Runnable() {
+//						@Override
+//						public void run() {
+//							String str = String.format("%s\n\n%s",
+//									DigiLaun.WORKS_READING_FAILURE_MESSAGE,
+//									ex.getLocalizedMessage());
+//
+//							for(StackTraceElement st : ex.getStackTrace()) {
+//								str += "\n        at " + st.toString();
+//							}
+//							javax.swing.JOptionPane.showMessageDialog(
+//									frmDigiLaun, str);
+////							frmDigiLaun.dispose();
+//						}
+//					});
+////					return;
+//					System.exit(ErrorCodes.CANNOT_READ_CONFIG);
+//				}
+//
+//				java.awt.EventQueue.invokeLater(new Runnable() {
+//					public void run() {
+//						// 展示モードなら全画面
+//						if(DigiLaun.config.getMode() == Config.Mode.DISPLAY)
+//							DigiLaun.window.setFullScreenMode(true);
+//					}
+//				});
+//				DigiLaun.this.initIndexPanel();
+//			}
+//		}.start();
+	}
+
+	/**
+	 * ウィンドウを閉じる要求を受けたときのイベント処理です。
+	 */
+	private void onWindowClosing() {
+		// 頒布モードなら普通に閉じる
+		if(config.getMode() == Config.Mode.DISTRIBUTION) {
+			this.frmDigiLaun.dispose();
+			return;
+		}
+		// そうでなければメッセージ表示
+		javax.swing.JOptionPane.showMessageDialog(this.frmDigiLaun,
+				CANNOT_CLOSE_MESSAGE);
+	}
+
+	/**
+	 * ウィンドウが閉じられたときのイベント処理です。
+	 */
+	protected void onWindowClosed() {
+//		if(getFullScreenMode())
+//			DigiLaun.this.setFullScreenMode(false);
+		timer.stop();
 	}
 
 	/**
@@ -264,7 +294,7 @@ public class DigiLaun {
 	 */
 	private void initIndexPanel() {
 		// 制作年度ごとの子パネルを追加
-		ListIterator<Work> i = works.listIterator();
+		ListIterator<Work> i = config.getWorks().listIterator();
 		GridBagLayout gbl = (GridBagLayout)this.indexPanel.getLayout();
 		while(i.hasNext()) {
 			YearWorksPanel panel = new YearWorksPanel(i);
@@ -272,7 +302,7 @@ public class DigiLaun {
 
 			gbc.fill = GridBagConstraints.HORIZONTAL;
 			gbc.gridwidth = GridBagConstraints.REMAINDER;
-			gbc.weighty = works.getFirst().getYear() - panel.getYear();
+			gbc.weighty = config.getWorks().getFirst().getYear() - panel.getYear();
 			gbc.anchor = GridBagConstraints.NORTH;
 
 			gbl.setConstraints(panel, gbc);
@@ -311,9 +341,12 @@ public class DigiLaun {
 				}, AWTEvent.KEY_EVENT_MASK);
 //		this.indexPanel.repaint();
 
+		((CardLayout)this.frmDigiLaun.getContentPane().getLayout()).show(
+				this.frmDigiLaun.getContentPane(), "name_1386749345977117000");
+
 		// コンポーネントの追加が終わったら、
 		// 最後のイベントとしてタイマーリセット処理を入れる
-		this.timer.start();
+		(this.timer = new Timer(this.headLabel, new TimerCallback())).start();
 	}
 
 	/**
@@ -345,26 +378,48 @@ public class DigiLaun {
 		timer.stop();
 
 		// ウィンドウを隠す
-		frmDigiLaun.setVisible(false);
+		this.showSplashLabel();
+		this.frmDigiLaun.repaint();
 
 		// ボタン等を有効化
-		setButtonsEnabled(true);
-		// スクロール位置をリセット
-		this.indexScrollPane.getViewport().setAlignmentY(0);
+		this.setButtonsEnabled(true);
+		java.awt.EventQueue.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				// スクロール位置をリセット
+				DigiLaun.this.indexScrollPane.getViewport().setAlignmentY(0);
 
-		// 一定時間待つ
-		try {
-			Thread.sleep(DigiLaun.RESET_HIDING_TIME);
-		}
-		catch(InterruptedException e) {
-		}
+				// 一定時間待つ
+				try {
+					Thread.sleep(DigiLaun.RESET_HIDING_TIME);
+				}
+				catch(InterruptedException e) {
+				}
 
-		// ウィンドウを再描画して表示
-		DigiLaun.this.frmDigiLaun.repaint();
-		DigiLaun.this.frmDigiLaun.setVisible(true);
+				// ウィンドウを再描画して表示
+				DigiLaun.this.mainPanel.repaint();
+				DigiLaun.this.showMainPanel();
 
-		// タイマーを始める
-		timer.start();
+				// タイマーを始める
+				DigiLaun.this.timer.start();
+			}
+		});
+	}
+
+	/**
+	 * スプラッシュ画面を表示します。
+	 */
+	private void showSplashLabel() {
+		((CardLayout)this.frmDigiLaun.getContentPane().getLayout()).show(
+				this.frmDigiLaun.getContentPane(), "name_1386749295936071000");
+	}
+
+	/**
+	 * 主パネルを表示します。
+	 */
+	private void showMainPanel() {
+		((CardLayout)this.frmDigiLaun.getContentPane().getLayout()).show(
+				this.frmDigiLaun.getContentPane(), "name_1386749345977117000");
 	}
 
 	/**
@@ -382,7 +437,7 @@ public class DigiLaun {
 	 */
 	private void processKeyCommand(KeyEvent e) {
 		// 頒布モードなら無視
-		if(DigiLaun.getDistributionMode())
+		if(config.getMode() == Config.Mode.DISTRIBUTION)
 			return;
 		// 終了   Ctrl+Shift+2
 		if(e.isControlDown() &&
@@ -397,36 +452,54 @@ public class DigiLaun {
 			DigiLaun.this.resetFrame();
 	}
 
-	/**
-	 * 全画面モードかどうかを調べます。
-	 * @return 全画面モードなら真
-	 */
-	private boolean getFullScreenMode() {
-		synchronized(this) {
-			return gd == null || gd.getFullScreenWindow() == frmDigiLaun;
-		}
-	}
+//	/**
+//	 * 全画面モードかどうかを調べます。
+//	 * @return 全画面モードなら真
+//	 */
+//	private boolean getFullScreenMode() {
+//		synchronized(this) {
+//			return gd == null || gd.getFullScreenWindow() == frmDigiLaun;
+//		}
+//	}
 
 	/**
 	 * 全画面モードをセットします。
 	 * @param status 真にすると全画面表示になる
 	 */
 	private void setFullScreenMode(final boolean status) {
-		// 画面デバイスが未取得なら取得
-		synchronized(this) {
-			if(gd == null) {
-				if(ge == null)
-					ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-				gd = ge.getDefaultScreenDevice();
-			}
-		}
-//		EventQueue.invokeLater(new Runnable() {
-//			@Override
-//			public void run() {
-				frmDigiLaun.setResizable(!status);
-				frmDigiLaun.setUndecorated(!status);
-				gd.setFullScreenWindow(status ? frmDigiLaun : null);
+//			// グラフィック環境が未取得なら取得
+//			synchronized(this) {
+//				if(ge == null)
+//					ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+//	//			if(gd == null)
+//	//				gd = ge.getDefaultScreenDevice();
 //			}
-//		});
+		// 
+		final Runnable process = new Runnable() {
+			@Override
+			public void run() {
+				frmDigiLaun.setResizable(!status);
+				frmDigiLaun.setUndecorated(status);
+				if(status)
+					frmDigiLaun.addWindowListener(
+							WindowMaximizer.getInstance());
+				else
+					frmDigiLaun.removeWindowListener(
+							WindowMaximizer.getInstance());
+//				gd.setFullScreenWindow(status ? frmDigiLaun : null);
+			}
+		};
+		if(java.awt.EventQueue.isDispatchThread())
+			process.run();
+		else
+			try {
+				java.awt.EventQueue.invokeAndWait(process);
+			} catch (InvocationTargetException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	}
 }

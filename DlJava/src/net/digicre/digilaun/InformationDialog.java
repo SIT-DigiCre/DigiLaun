@@ -29,6 +29,15 @@ import javax.swing.ScrollPaneConstants;
  */
 @SuppressWarnings("serial")
 public class InformationDialog extends JDialog {
+	/**
+	 * テキスト領域の既定の幅です。
+	 */
+	private static final int DEFAULT_VIEW_WIDTH  = 980; 
+
+	/**
+	 * テキスト領域の既定の高さです。
+	 */
+	private static final int DEFAULT_VIEW_HEIGHT = DEFAULT_VIEW_WIDTH * 3/4; 
 
 	/**
 	 * タイトルバーに表示するテキストのフォーマットです。
@@ -65,32 +74,7 @@ public class InformationDialog extends JDialog {
 				editorPane = new JEditorPane();
 				editorPane.addHyperlinkListener(new HyperlinkListener() {
 					public void hyperlinkUpdate(HyperlinkEvent arg0) {
-						// マウスオーバー、マウスアウトイベントは無視
-						//クリックのみ処理
-						if(arg0.getEventType() !=
-								HyperlinkEvent.EventType.ACTIVATED)
-							return;
-						// FILE プロトコルでなければブラウザーで開く
-						if(!arg0.getURL().getProtocol().equals("file")) {
-							try {
-								Desktop desktop = Desktop.getDesktop();
-								desktop.browse(arg0.getURL().toURI());
-							} catch (Exception e) {
-							}
-							return;
-						}
-						// リンクを開く
-						try {
-							((JEditorPane)arg0.getSource()).setPage(
-									arg0.getURL());
-						} catch (IOException e) {
-							javax.swing.JOptionPane.showMessageDialog(
-									InformationDialog.this,
-									String.format("%s\n\n%s",
-											InformationDialog.
-												LINK_ERROR_MESSAGE,
-											e.getLocalizedMessage()));
-						}
+						onHyperLinkUpdate(arg0);
 					}
 				});
 				editorPane.setEditable(false);
@@ -116,6 +100,36 @@ public class InformationDialog extends JDialog {
 		}
 	}
 
+	private void onHyperLinkUpdate(HyperlinkEvent e) {
+		// マウスオーバー、マウスアウトイベントは無視
+		//クリックのみ処理
+		if(e.getEventType() != HyperlinkEvent.EventType.ACTIVATED)
+			return;
+		// FILE プロトコルでないか、
+		// JEditorPane で表示できなければブラウザーで開く
+		if(!e.getURL().getProtocol().equals("file") ||
+				!fileCanShowInEditorPane(e.getURL().getPath())) {
+			try {
+				Desktop desktop = Desktop.getDesktop();
+				desktop.browse(e.getURL().toURI());
+			} catch (Exception ex) {
+			}
+			return;
+		}
+		// リンクを開く
+		try {
+			((JEditorPane)e.getSource()).setPage(
+					e.getURL());
+		} catch (IOException ex) {
+			javax.swing.JOptionPane.showMessageDialog(
+					InformationDialog.this,
+					String.format("%s\n\n%s",
+							InformationDialog.
+								LINK_ERROR_MESSAGE,
+							ex.getLocalizedMessage()));
+		}
+	}
+
 	/**
 	 * 作品の詳しい情報テキストを表示する、新しい
 	 * <code>{@link InformationDialog}</code> を作成します。
@@ -125,11 +139,11 @@ public class InformationDialog extends JDialog {
 	 */
 	static void open(final Work work) {
 		// 拡張子が txt でも UTF でも HTML でもなければ
-		if(!fileCanShowInEditorPane(work.getTextPath())) {
+		if(!fileCanShowInEditorPane(work.getDetailTextPath())) {
 			// 普通にオープンを試みる
 			Desktop d = Desktop.getDesktop();
 			try {
-				d.open(new File(work.getTextPath()));
+				d.open(new File(work.getDetailTextPath()));
 				return;
 			} catch (Exception e) {
 			}
@@ -144,22 +158,24 @@ public class InformationDialog extends JDialog {
 				if(work.getName() != null &&
 						!work.getName().isEmpty())
 					it.setTitle(String.format(TITLE_FORMAT, work.getName()));
-				// テキスト領域が 980x735 になるようサイズを調整
+				// テキスト領域が既定値になるようサイズを調整
 				it.pack();
 				{
 					java.awt.Rectangle rect =
 							it.scrollPane.getViewportBorderBounds();
 					rect.x =
 					rect.y = 0;
-					rect.width  = it.getWidth()  - rect.width  + 980;
-					rect.height = it.getHeight() - rect.height + 735;
+					rect.width  =
+							it.getWidth()  - rect.width  + DEFAULT_VIEW_WIDTH;
+					rect.height =
+							it.getHeight() - rect.height + DEFAULT_VIEW_HEIGHT;
 					it.setBounds(rect);
 				}
 				it.pack();
 				// テキストペインのセット
-				if(work.getTextPath() != null &&
-						!work.getTextPath().isEmpty()) {
-					File file = new File(work.getTextPath());
+				if(work.getDetailTextPath() != null &&
+						!work.getDetailTextPath().isEmpty()) {
+					File file = new File(work.getDetailTextPath());
 					try {
 						it.editorPane.setContentType(
 								"text/plain;charset=Shift_JIS");

@@ -83,6 +83,11 @@ class WorkButton extends JButton {
 	 *
 	 */
 	private class ActionProc implements java.awt.event.ActionListener {
+		/**
+		 * 作品ボタンが押されたときの処理です。
+		 * 概要ダイアログを開きます。
+		 * @param arg0 イベント
+		 */
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			SummaryDialog detailDialog = new SummaryDialog(

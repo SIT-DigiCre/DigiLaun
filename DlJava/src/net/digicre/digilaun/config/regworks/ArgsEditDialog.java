@@ -2,25 +2,23 @@ package net.digicre.digilaun.config.regworks;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.JScrollPane;
-import net.digicre.digilaun.work.WritableWork;
 
 @SuppressWarnings("serial")
-public class WorkEditDialog extends JDialog {
+public class ArgsEditDialog extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
-	private RegisterPanel registerPanel;
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
 		try {
-			WorkEditDialog dialog = new WorkEditDialog();
+			ArgsEditDialog dialog = new ArgsEditDialog();
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
@@ -31,20 +29,12 @@ public class WorkEditDialog extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public WorkEditDialog() {
+	public ArgsEditDialog() {
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
+		contentPanel.setLayout(new FlowLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
-		contentPanel.setLayout(new BorderLayout(0, 0));
-		{
-			JScrollPane scrollPane = new JScrollPane();
-			contentPanel.add(scrollPane);
-			{
-				registerPanel = new RegisterPanel();
-				scrollPane.setViewportView(registerPanel);
-			}
-		}
 		{
 			JPanel buttonPane = new JPanel();
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
@@ -56,18 +46,11 @@ public class WorkEditDialog extends JDialog {
 				getRootPane().setDefaultButton(okButton);
 			}
 			{
-				JButton cancelButton = new JButton("Cancel");
+				JButton cancelButton = new JButton("キャンセル");
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
 			}
 		}
 	}
 
-	/**
-	 * このダイアログに入力されたデータを作品オブジェクトにして返します。
-	 * @return 入力されたデータを持つ作品オブジェクト
-	 */
-	WritableWork createWork() {
-		return registerPanel.createWork();
-	}
 }

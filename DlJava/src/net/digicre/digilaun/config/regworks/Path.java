@@ -1,8 +1,8 @@
 package net.digicre.digilaun.config.regworks;
 
 import java.io.File;
-import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.ListIterator;
 
 /**
  * 相対パス構築機能などを提供します。
@@ -98,11 +98,14 @@ public class Path {
 		Path relativePath = new Path();
 
 		// 比較
-		Iterator<String> i = that.pathList.iterator();
-		Iterator<String> j = this.pathList.iterator();
+		ListIterator<String> i = that.pathList.listIterator();
+		ListIterator<String> j = this.pathList.listIterator();
 		while(i.hasNext() && j.hasNext()) {
-			if(!i.next().equals(j.next()))
+			if(!i.next().equals(j.next())) {
+				i.previous();
+				j.previous();
 				break;
+			}
 		}
 
 		// 構築

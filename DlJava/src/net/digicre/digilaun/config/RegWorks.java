@@ -6,30 +6,49 @@ import java.awt.FlowLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.JScrollPane;
-import net.digicre.digilaun.config.regworks.*;
-import java.awt.Dimension;
-import java.awt.GridBagLayout;
 import javax.swing.ListSelectionModel;
+
+import net.digicre.digilaun.Config;
+import net.digicre.digilaun.config.regworks.WorkTableModel;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.GridLayout;
+import java.awt.Dimension;
+import java.io.IOException;
+
+import net.digicre.digilaun.config.regworks.RegisterPanel;
+import net.digicre.digilaun.work.WorkList;
+
+import javax.swing.JSplitPane;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.xml.sax.SAXException;
+import net.digicre.digilaun.config.regworks.WorkTable;
 
 @SuppressWarnings("serial")
 public class RegWorks extends JDialog {
-
-	private final JPanel contentPanel = new JPanel();
-	private JTable worksTable;
+	private WorkTable workTable;
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		Config config = new Config();
 		try {
-			RegWorks dialog = new RegWorks();
+			config.readFromXMLDocument();
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			RegWorks dialog = new RegWorks(config.getWorks());
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
@@ -40,117 +59,92 @@ public class RegWorks extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ })
 	public RegWorks() {
+		setTitle("作品データベース");
 		setBounds(100, 100, 800, 646);
 		getContentPane().setLayout(new BorderLayout());
-		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		getContentPane().add(contentPanel, BorderLayout.CENTER);
-		contentPanel.setLayout(new BorderLayout(0, 0));
 		{
-			JPanel panel = new JPanel();
-			contentPanel.add(panel, BorderLayout.WEST);
-			panel.setLayout(new BorderLayout(0, 0));
+			JSplitPane contentSplitPane = new JSplitPane();
+			getContentPane().add(contentSplitPane, BorderLayout.CENTER);
 			{
-				JScrollPane scrollPane = new JScrollPane();
-				panel.add(scrollPane, BorderLayout.CENTER);
-				scrollPane.setPreferredSize(new Dimension(353, 23));
-				{
-					RegisterPanel registerPanel = new RegisterPanel();
-					GridBagLayout gridBagLayout = (GridBagLayout) registerPanel.getLayout();
-					gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-					gridBagLayout.rowHeights = new int[]{15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15};
-					gridBagLayout.columnWeights = new double[]{1.0, 0.0};
-					gridBagLayout.columnWidths = new int[]{450, 0};
-					scrollPane.setViewportView(registerPanel);
-				}
-			}
-			{
-				JPanel panel_2 = new JPanel();
-				panel.add(panel_2, BorderLayout.SOUTH);
-				panel_2.setLayout(new BorderLayout(0, 0));
-				{
-					JButton btnr = new JButton("登録(R)");
-					btnr.setFont(btnr.getFont().deriveFont(23f));
-					btnr.setMnemonic('R');
-					panel_2.add(btnr, BorderLayout.NORTH);
-				}
+				JPanel panel = new JPanel();
+				contentSplitPane.setLeftComponent(panel);
+				panel.setLayout(new BorderLayout(0, 0));
 				{
 					JPanel panel_1 = new JPanel();
-					panel_2.add(panel_1, BorderLayout.SOUTH);
+					panel.add(panel_1, BorderLayout.SOUTH);
+					panel_1.setLayout(new BorderLayout(0, 5));
+					{
+						JButton btnr = new JButton("登録(R)");
+						btnr.setFont(btnr.getFont().deriveFont(btnr.getFont().getSize() + 12f));
+						btnr.setMnemonic('R');
+						panel_1.add(btnr);
+					}
 					{
 						JButton btno = new JButton("上書き(O)");
 						btno.setMnemonic('O');
-						panel_1.add(btno);
+						panel_1.add(btno, BorderLayout.SOUTH);
+					}
+				}
+				{
+					JScrollPane scrollPane_1 = new JScrollPane();
+					panel.add(scrollPane_1, BorderLayout.CENTER);
+					{
+						RegisterPanel registerPanel = new RegisterPanel();
+						registerPanel.setPreferredSize(new Dimension(10, 10));
+						scrollPane_1.setViewportView(registerPanel);
 					}
 				}
 			}
-		}
-		{
-			JScrollPane scrollPane = new JScrollPane();
-			contentPanel.add(scrollPane, BorderLayout.CENTER);
 			{
-				worksTable = new JTable();
-				worksTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-				worksTable.setModel(new DefaultTableModel(
-					new Object[][] {
-					},
-					new String[] {
-						"\u540D\u524D", "\u5236\u4F5C\u5E74\u5EA6", "\u30D1\u30B9", "\u30B3\u30DE\u30F3\u30C9\u30E9\u30A4\u30F3\u5F15\u6570", "\u5165\u529B", "\u30A2\u30A4\u30B3\u30F3", "\u6982\u8981\u30A4\u30E1\u30FC\u30B8", "\u8A73\u7D30\u30C6\u30AD\u30B9\u30C8"
-					}
-				) {
-					Class[] columnTypes = new Class[] {
-						String.class, Short.class, String.class, String.class, String.class, String.class, String.class, String.class
-					};
-					public Class getColumnClass(int columnIndex) {
-						return columnTypes[columnIndex];
-					}
-				});
-				worksTable.getColumnModel().getColumn(0).setPreferredWidth(150);
-				worksTable.getColumnModel().getColumn(2).setPreferredWidth(300);
-				worksTable.getColumnModel().getColumn(4).setPreferredWidth(150);
-				worksTable.getColumnModel().getColumn(5).setPreferredWidth(300);
-				worksTable.getColumnModel().getColumn(6).setPreferredWidth(300);
-				worksTable.getColumnModel().getColumn(7).setPreferredWidth(300);
-				scrollPane.setViewportView(worksTable);
+				JScrollPane scrollPane = new JScrollPane();
+				contentSplitPane.setRightComponent(scrollPane);
+				{
+					workTable = new WorkTable((WorkList) null);
+					workTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+					workTable.setModel(new WorkTableModel());
+					scrollPane.setViewportView(workTable);
+				}
 			}
+			contentSplitPane.setDividerLocation(320);
 		}
 		{
 			JPanel buttonPane = new JPanel();
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
-			buttonPane.setLayout(new GridLayout(0, 2, 0, 0));
+			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));
 			{
-				JPanel panel = new JPanel();
-				FlowLayout flowLayout = (FlowLayout) panel.getLayout();
-				flowLayout.setAlignment(FlowLayout.LEFT);
-				buttonPane.add(panel);
-				{
-					JButton btnr_1 = new JButton("登録(R)");
-					panel.add(btnr_1);
-				}
+				JButton okButton = new JButton("OK");
+				buttonPane.add(okButton);
+				okButton.setActionCommand("OK");
+				getRootPane().setDefaultButton(okButton);
 			}
 			{
-				JPanel panel = new JPanel();
-				FlowLayout flowLayout = (FlowLayout) panel.getLayout();
-				flowLayout.setAlignment(FlowLayout.RIGHT);
-				buttonPane.add(panel);
-				{
-					JButton okButton = new JButton("OK");
-					panel.add(okButton);
-					okButton.setActionCommand("OK");
-					getRootPane().setDefaultButton(okButton);
-				}
-				{
-					JButton cancelButton = new JButton("Cancel");
-					panel.add(cancelButton);
-					cancelButton.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent arg0) {
-							dispose();
-						}
-					});
-					cancelButton.setActionCommand("Cancel");
-				}
+				JButton cancelButton = new JButton("キャンセル");
+				buttonPane.add(cancelButton);
+				cancelButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent arg0) {
+						dispose();
+					}
+				});
+				cancelButton.setActionCommand("Cancel");
 			}
+		}
+	}
+
+	public RegWorks(WorkList works) {
+		this();
+		WorkTableModel tm = (WorkTableModel)this.workTable.getModel();
+		//tm.setWorkList(works.getWritableCopy());
+	}
+
+	static void open() {
+		try {
+			RegWorks dialog = new RegWorks();
+			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			dialog.setVisible(true);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 }

@@ -116,7 +116,7 @@ class Timer implements Runnable {
 	void start() {
 		stop();
 		// 頒布モードならラベルを初期化して終了
-		if(DigiLaun.getDistributionMode()) {
+		if(DigiLaun.config.getMode() == Config.Mode.DISTRIBUTION) {
 			updateLabelText(0L);
 			updateLabelBackgroundColor(0L);
 			return;

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package net.digicre.digilaun;
 
 import java.io.File;
@@ -10,6 +7,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import net.digicre.digilaun.work.Work;
 
@@ -136,13 +134,14 @@ class ProcessLogger {
 	 * @see OpenStatus
 	 */
 	void writeWorkStatus(Work work, OpenStatus status) throws IOException {
-		Calendar c = Calendar.getInstance();
+		GregorianCalendar c = new GregorianCalendar();
+
 		this.writer.writeCSVRecord(new String[] {
 				work.getName(),
 				work.getPath(),
 				status.toString(),
 				Integer.toString(c.get(Calendar.YEAR)),
-				Integer.toString(c.get(Calendar.MONTH)),
+				Integer.toString(c.get(Calendar.MONTH)+1),
 				Integer.toString(c.get(Calendar.DATE)),
 				Integer.toString(c.get(Calendar.HOUR)),
 				Integer.toString(c.get(Calendar.MINUTE)),

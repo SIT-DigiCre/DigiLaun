@@ -24,10 +24,47 @@ import javax.swing.SwingConstants;
 @SuppressWarnings("serial")
 class SummaryDialog extends JDialog {
 	/**
+	 * プロセスの終了を待ってウィンドウを閉じるスレッドです。
+	 * @author p10090
+	 */
+	private class ProcessWaitingThread extends Thread {
+		@Override
+		public void run() {
+			putLog(ProcessLogger.OpenStatus.Started);
+			SummaryDialog.this.connectProcessStream();
+			while(true) {
+				Process p;
+				if((p = SummaryDialog.this.process) != null) {
+					try {
+						p.waitFor();
+					} catch (InterruptedException e) {
+					}
+					try {
+						putLog(p.exitValue() != 0
+							? ProcessLogger.OpenStatus.ExitFailed
+							: ProcessLogger.OpenStatus.ExitSuccessful);
+						SummaryDialog.this.disconnectProcessStream();
+						break;
+					}
+					catch(IllegalThreadStateException e) {}
+				}
+			}
+			SummaryDialog.this.dispatchEvent(new WindowEvent(
+					SummaryDialog.this, WindowEvent.WINDOW_CLOSING));
+		}
+	}
+
+	/**
 	 * ファイルを実行もオープンもできなかったときのエラーメッセージです。
 	 */
 	private static final String OPENING_ERROR_MESSAGE =
-			"このさくひんは たいけんできないよ";
+			"このさくひんは たいけんできないよ.";
+
+	/**
+	 * KILLボタン押下時の強制終了確認ダイアログのタイトルです。
+	 */
+	protected static final String KILL_CONFIRM_TITLE =
+			"強制終了確認";
 
 	/**
 	 * KILLボタン押下時の強制終了確認メッセージです。
@@ -67,34 +104,6 @@ class SummaryDialog extends JDialog {
 	private SummaryImageArea summaryImageArea;
 
 	/**
-	 * プロセスの終了を待ってウィンドウを閉じるスレッドです。
-	 * @author p10090
-	 */
-	private class ProcessWaitingThread extends Thread {
-		@Override
-		public void run() {
-			putLog(ProcessLogger.OpenStatus.Started);
-			SummaryDialog.this.connectProcessStream();
-			while(true) {
-				try {
-					SummaryDialog.this.process.waitFor();
-				} catch (InterruptedException e) {
-				}
-				if(SummaryDialog.this.process != null) try {
-					putLog(SummaryDialog.this.process.exitValue() != 0
-						? ProcessLogger.OpenStatus.ExitFailed
-						: ProcessLogger.OpenStatus.ExitSuccessful);
-					SummaryDialog.this.disconnectProcessStream();
-					break;
-				}
-				catch(IllegalThreadStateException e) {}
-			}
-			SummaryDialog.this.dispatchEvent(new WindowEvent(
-					SummaryDialog.this, WindowEvent.WINDOW_CLOSING));
-		}
-	}
-
-	/**
 	 * Create the dialog.
 	 */
 	private SummaryDialog() {
@@ -102,27 +111,11 @@ class SummaryDialog extends JDialog {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent arg0) {
-				if(process != null) {
-					// プロセスが終了済みなら閉じる
-					try {
-						process.exitValue();
-						SummaryDialog.this.dispose();
-					}
-					// プロセスが実行中なら何もしない
-					catch(IllegalThreadStateException e) {
-					}
-				}
-				// プロセスが未実行なら閉じる
-				else {
-					SummaryDialog.this.dispose();
-				}
+				SummaryDialog.this.onWindowClosing();
 			}
 			@Override
 			public void windowClosed(WindowEvent arg0) {
-				synchronized(SummaryDialog.this) {
-					if(SummaryDialog.this.logger != null)
-						SummaryDialog.this.logger.close();
-				}
+				SummaryDialog.this.onWindowClosed();
 			}
 		});
 		setTitle("作品詳細");
@@ -144,11 +137,7 @@ class SummaryDialog extends JDialog {
 				startButton = new JButton("はじめる!");
 				startButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
-						if(SummaryDialog.this.process == null) {
-							SummaryDialog.this.startWorkTrial();
-							((javax.swing.AbstractButton)arg0.getSource()
-									).setEnabled(false);
-						}
+						SummaryDialog.this.onClickStartButton();
 					}
 				});
 				startButton.setFont(startButton.getFont().deriveFont(48f));
@@ -160,45 +149,7 @@ class SummaryDialog extends JDialog {
 				cancelButton = new JButton("もどる");
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						// プロセスが実行中なら
-						if(process != null) {
-							try {
-								process.exitValue();
-							}
-							catch(IllegalThreadStateException ex) {
-								// 強制終了
-								if(JOptionPane.showConfirmDialog(
-										SummaryDialog.this,
-										KILL_CONFIRM_MESSAGE,
-										"Select an Option",
-										JOptionPane.YES_NO_OPTION,
-										JOptionPane.WARNING_MESSAGE
-										) == JOptionPane.YES_OPTION) {
-									synchronized(SummaryDialog.this) {
-										try {
-											SummaryDialog.this.process.
-											getOutputStream().close();
-											SummaryDialog.this.process.
-											getInputStream().close();
-											SummaryDialog.this.process.
-											getErrorStream().close();
-										} catch (IOException ioe) {
-											throw new RuntimeException(ioe);
-										}
-										SummaryDialog.this.process.destroy();
-										SummaryDialog.this.process = null;
-									}
-									SummaryDialog.this.putLog(
-											ProcessLogger.OpenStatus.Killed);
-								}
-							}
-						}
-						// 閉じる
-						SummaryDialog.this.processWindowEvent(
-								new java.awt.event.WindowEvent(
-										SummaryDialog.this,
-										java.awt.event.WindowEvent.
-										WINDOW_CLOSING));
+						SummaryDialog.this.onClickBackButton();
 					}
 				});
 				cancelButton.setFont(cancelButton.getFont().deriveFont(32f));
@@ -212,7 +163,7 @@ class SummaryDialog extends JDialog {
 					btni = new JButton("もっと詳しい情報(I)");
 					btni.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent arg0) {
-							InformationDialog.open(work);
+							SummaryDialog.this.onClickMoreInfoButton();
 						}
 					});
 					btni.setMnemonic('I');
@@ -227,6 +178,101 @@ class SummaryDialog extends JDialog {
 		}
 	}
 
+	/**
+	 * 「はじめる!」ボタンが押されたときのイベント処理です。
+	 */
+	private void onClickStartButton() {
+		synchronized(this) {
+			if(this.process == null) {
+				this.startWorkTrial();
+			}
+		}
+	}
+
+	/**
+	 * 「もどる」ボタンが押されたときのイベント処理です。
+	 */
+	private void onClickBackButton() {
+		synchronized(this) {
+			// プロセスが実行中なら
+			if(process != null) {
+				try {
+					process.exitValue();
+				}
+				catch(IllegalThreadStateException ex) {
+					// 強制終了
+					if(JOptionPane.showConfirmDialog(
+							this,
+							KILL_CONFIRM_MESSAGE,
+							KILL_CONFIRM_TITLE,
+							JOptionPane.YES_NO_OPTION,
+							JOptionPane.WARNING_MESSAGE
+							) == JOptionPane.YES_OPTION) {
+						SummaryDialog.this.process.destroy();
+						SummaryDialog.this.putLog(
+								ProcessLogger.OpenStatus.Killed);
+					}
+				}
+			}
+			// プロセスが未実行なら閉じる
+			SummaryDialog.this.processWindowEvent(
+					new java.awt.event.WindowEvent(
+							SummaryDialog.this,
+							java.awt.event.WindowEvent.
+							WINDOW_CLOSING));
+		}
+	}
+
+	/**
+	 * 「もっと詳しい情報」ボタンが押されたときのイベント処理です。
+	 */
+	protected void onClickMoreInfoButton() {
+		InformationDialog.open(work);
+	}
+
+	/**
+	 * このダイアログが閉じるよう要求を受けたときのイベント処理です。
+	 */
+	private void onWindowClosing() {
+		if(process != null) {
+			// プロセスが終了済みなら閉じる
+			try {
+				process.exitValue();
+				try {
+					SummaryDialog.this.process.
+					getOutputStream().close();
+					SummaryDialog.this.process.
+					getInputStream().close();
+					SummaryDialog.this.process.
+					getErrorStream().close();
+				} catch (IOException e) {
+				}
+				SummaryDialog.this.dispose();
+			}
+			// プロセスが実行中なら何もしない
+			catch(IllegalThreadStateException e) {
+			}
+		}
+		// プロセスが未実行なら閉じる
+		else {
+			SummaryDialog.this.dispose();
+		}
+	}
+
+	/**
+	 * このダイアログが閉じられたときのイベント処理です。
+	 */
+	private void onWindowClosed() {
+		synchronized(SummaryDialog.this) {
+			if(SummaryDialog.this.logger != null)
+				SummaryDialog.this.logger.close();
+		}
+	}
+
+	/**
+	 * 指定した作品の概要を表示するダイアログを作成します。
+	 * @param work 作品オブジェクト
+	 */
 	public SummaryDialog(Work work) {
 		this();
 		// イラストが 640x480 になるようサイズ調整
@@ -246,8 +292,8 @@ class SummaryDialog extends JDialog {
 		this.summaryImageArea.setWork(work);
 		// 情報テキストがありそうでなければ情報ボタンを無効化
 		this.btni.setEnabled(
-				work.getTextPath() != null &&
-				!work.getTextPath().isEmpty()
+				work.getDetailTextPath() != null &&
+				!work.getDetailTextPath().isEmpty()
 				);
 
 		// 中央に表示
@@ -262,8 +308,10 @@ class SummaryDialog extends JDialog {
 		// 情報を準備
 		final File file = new File(work.getPath());
 		File pdir = file.getParentFile();
-		final ProcessBuilder pb = new ProcessBuilder(
-				work.getPath(), work.getArguments());
+		String[] command = new String[work.getArgs().length+1];
+		command[0] = work.getPath();
+		System.arraycopy(work.getArgs(), 0, command, 1, work.getArgs().length);
+		final ProcessBuilder pb = new ProcessBuilder(command);
 		pb.directory(pdir != null ? pdir : new File("."));
 		try {
 			logger = new ProcessLogger();
@@ -277,6 +325,8 @@ class SummaryDialog extends JDialog {
 		try {
 			this.process = pb.start();
 			new ProcessWaitingThread().start();
+			// ボタンを更新
+			this.startButton.setEnabled(false);
 			this.cancelButton.setText(SummaryDialog.KILL_BUTTON_TEXT);
 		}
 		// 失敗したら
@@ -285,9 +335,12 @@ class SummaryDialog extends JDialog {
 			Desktop d = Desktop.getDesktop();
 			try {
 				d.open(file);
+				// ログを出力して閉じる
 				putLog(ProcessLogger.OpenStatus.Opened);
 				SummaryDialog.this.dispose();
-			} catch (Exception e1) {
+			}
+			// 失敗したら
+			catch (Exception e1) {
 				// エラーを表示
 				putLog(ProcessLogger.OpenStatus.CannotOpen);
 				System.err.println(e .getLocalizedMessage());

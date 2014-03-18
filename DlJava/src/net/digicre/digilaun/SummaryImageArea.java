@@ -58,7 +58,7 @@ public class SummaryImageArea extends JComponent implements ComponentListener {
 		this.work = work;
 		try {
 			this.baseImage =
-					ImageCache.getInstance().getImage(work.getSummaryImagePath());
+					ImageCache.getInstance().getImage(work.getSummaryImageFile());
 		}
 		catch(java.io.IOException e) {
 			createAlternativeImage();

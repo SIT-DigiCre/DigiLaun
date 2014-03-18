@@ -96,6 +96,11 @@ public class StreamConnector {
 		this.out = out;
 	}
 
+	/**
+	 * ガーベッジコレクターにより破棄される前の処理です。
+	 * ストリームを切断します。
+	 * @see #disconnect()
+	 */
 	@Override
 	protected void finalize() throws Throwable {
 		this.disconnect();

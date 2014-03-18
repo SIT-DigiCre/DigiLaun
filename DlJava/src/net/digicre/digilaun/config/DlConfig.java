@@ -11,16 +11,18 @@ import javax.swing.JPanel;
 import java.awt.FlowLayout;
 import javax.swing.JButton;
 
-import org.xml.sax.SAXException;
-
 import net.digicre.digilaun.Config;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
 import java.awt.event.WindowAdapter;
 import java.awt.Dimension;
 
+/**
+ * Digi Laun のコンフィグを行うアプリのメインクラスです。
+ * @author p10090
+ * @see #main(String[])
+ */
 public class DlConfig implements ConfigListener {
 	/**
 	 * 設定ファイルを読めなかった時のエラーメッセージのフォーマットです。

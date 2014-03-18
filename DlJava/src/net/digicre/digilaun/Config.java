@@ -19,6 +19,10 @@ import org.xml.sax.SAXException;
 import net.digicre.digilaun.work.Work;
 import net.digicre.digilaun.work.WorkList;
 
+/**
+ * Digi Laun のコンフィグを扱うクラスです。
+ * @author p10090
+ */
 public class Config {
 	/**
 	 * Digi Laun のモードを表すデータの列挙型です。
@@ -41,14 +45,32 @@ public class Config {
 	 */
 	public static final String OUTPUT_ENCODING = "UTF-8";
 
+	/**
+	 * XML ファイルにおける、ルート要素の名前です。
+	 */
 	public static final String XML_ELEM_ROOT = "DigiLaun";
 
+	/**
+	 * XML ファイルにおける、モード要素の名前です。
+	 * @see #getMode()
+	 */
 	public static final String XML_ELEM_MODE = "mode";
 
+	/**
+	 * XML ファイルにおける、モード要素の値属性の名前です。
+	 * @see Mode
+	 */
 	public static final String XML_ATTR_MODE_VALUE = "value";
 
+	/**
+	 * XML ファイルにおける、設定要素の名前です。
+	 */
 	public static final String XML_ELEM_SETTINGS = "settings";
 
+	/**
+	 * XML ファイルにおける、作品集合要素の名前です。
+	 * @see #getWorks()
+	 */
 	public static final String XML_ELEM_WORKS = "works";
 
 	/**
@@ -182,7 +204,7 @@ public class Config {
 	 * このオブジェクトの設定を XML 要素として取得します。
 	 * @param document ドキュメント
 	 * @return このオブジェクトの設定を保持した XML 要素
-	 * @see Config#XML_ELEMENT_SETTINGS
+	 * @see Config#XML_ELEM_SETTINGS
 	 */
 	private Element getSettingsAsXMLElement(Document document) {
 		final Element elmSettigs = document.createElement(XML_ELEM_SETTINGS);
@@ -199,7 +221,7 @@ public class Config {
 	/**
 	 * XML の設定要素をもとに、このオブジェクトを設定します。
 	 * @param elmSettings 設定を保持した XML 要素
-	 * @see Config#XML_ELEMENT_SETTINGS
+	 * @see Config#XML_ELEM_SETTINGS
 	 */
 	private void setSettingsByXMLElement(Element elmSettings) {
 		Node node = elmSettings.getFirstChild();

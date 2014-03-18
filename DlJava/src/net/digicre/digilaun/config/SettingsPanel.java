@@ -20,8 +20,11 @@ import javax.swing.UIManager;
 import java.util.Enumeration;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.Dimension;
 
+/**
+ * Digi Laun の設定を行うパネル UI クラスです。
+ * @author p10090
+ */
 @SuppressWarnings("serial")
 public class SettingsPanel extends ConfigPanel {
 	private final ButtonGroup btngrpMode = new ButtonGroup();
@@ -115,11 +118,19 @@ public class SettingsPanel extends ConfigPanel {
 
 	}
 
+	/**
+	 * パネルを作成します。
+	 * @param config 既定の Digi Laun コンフィグ
+	 */
 	public SettingsPanel(Config config) {
 		this();
 		this.setSettings(config);
 	}
 
+	/**
+	 * 設定をこのパネルに反映します。
+	 * @param config Digi Laun コンフィグ
+	 */
 	public void setSettings(Config config) {
 		// 起動モードのチェックをセット
 		Enumeration<AbstractButton> i = this.btngrpMode.getElements();
@@ -132,6 +143,10 @@ public class SettingsPanel extends ConfigPanel {
 		}
 	}
 
+	/**
+	 * このパネルでのコンフィグを Config に適用します。
+	 * @param config コンフィグ適用先のオブジェクト
+	 */
 	@Override
 	public void applyConfig(Config config) {
 		// 起動モードのチェックを適用

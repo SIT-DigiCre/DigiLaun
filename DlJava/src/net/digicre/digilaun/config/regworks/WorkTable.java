@@ -1,18 +1,10 @@
-/**
- * 
- */
 package net.digicre.digilaun.config.regworks;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.ListIterator;
-
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
-import javax.swing.RowSorter;
-import javax.swing.SortOrder;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableRowSorter;
 
@@ -21,7 +13,7 @@ import net.digicre.digilaun.work.WorkList;
 import net.digicre.digilaun.work.WritableWork;
 
 /**
- * 作品テーブルです。このテーブルは作品リストを可変長配列で逆順に保持し、
+ * 作品テーブルです。このテーブルは作品リストを可変長配列で保持し、
  * テーブルが編集されると内部で保持している配列に直ちに反映します。
  * @author p10090
  *
@@ -53,7 +45,7 @@ public class WorkTable extends JTable {
 		this.setModel(model = new WorkTableModel());
 		columnModel = this.getColumnModel();
 		for(int i = 0; i < columnModel.getColumnCount(); ++i)
-			if(model.getColumnFileFilters(i) != null)
+			if(model.getColumnClass(i).equals(File.class))
 				columnModel.getColumn(i).setCellEditor(
 						new FileCellEditor(model.getColumnFileFilters(i)));
 		model.addTableModelListener(this);
@@ -77,11 +69,6 @@ public class WorkTable extends JTable {
 					new ArrayList<Work>(workList.size()+10);
 			for(Work work : workList)
 				this.editedWorksArray.add(new WritableWork(work));
-//			for(ListIterator<Work>
-//			i = workList.listIterator(workList.size()); i.hasPrevious();) {
-//				Work work = i.previous();
-//				this.editedWorksArray.add(new WritableWork(work));
-//			}
 		}
 		((WorkTableModel)this.getModel()).setWorkList(this.editedWorksArray);
 		((WorkTableModel)this.getModel()).fireTableDataChanged();
@@ -118,9 +105,6 @@ public class WorkTable extends JTable {
 			@Override
 			public void run() {
 				WorkTable.this.changeSelection(0, 0, false, false);
-//				((WorkTableModel)WorkTable.this.getModel()).
-//				fireTableRowsInserted(0, 0);
-//				WorkTable.this.resizeAndRepaint();
 			}});
 	}
 

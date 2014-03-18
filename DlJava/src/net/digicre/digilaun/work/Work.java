@@ -1,5 +1,6 @@
 package net.digicre.digilaun.work;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -107,10 +108,6 @@ public class Work implements Comparable<Work> {
 	 */
 	public static final String XML_ATTR_ARG_V = "value";
 
-	/**
-	 * 最新バージョンの DTD です。
-	 */
-    static String latestDTD = null;
     /**
 	 * 作品タイトルです。
 	 */
@@ -118,7 +115,7 @@ public class Work implements Comparable<Work> {
     /**
 	 * 開くファイルの相対パスです。
 	 */
-    String path;
+    File launchedFile;
     /**
 	 * コマンドライン引数です。
 	 */
@@ -126,15 +123,15 @@ public class Work implements Comparable<Work> {
     /**
 	 * タイトル画像の相対パスです。
 	 */
-    String summaryImagePath;
+    File summaryImageFile;
     /**
 	 * アイコン画像の相対パスです。
 	 */
-    String iconPath;
+    File iconFile;
     /**
 	 * クレジットの相対パスです。
 	 */
-    String detailTextPath;
+    File detailTextFile;
     /**
 	 * 入力デバイスです。
 	 */
@@ -144,38 +141,21 @@ public class Work implements Comparable<Work> {
 	 */
     int year;
 
-//    /**
-//     * 最新バージョンの XML データの DTD を取得します。
-//     * @return 出力する XML ファイルの DTD
-//     */
-//    public static String getLatestDTD() {
-//        // 要求に応じて文字列オブジェクトを作成する
-//        if (latestDTD == null)
-//            latestDTD =
-//            "<!ELEMENT "+XML_ELEMENT_ROOT+
-//            " ("+XML_ELEMENT_WORK+"*)>" +
-//            "<!ELEMENT "+XML_ELEMENT_WORK+" (#PCDATA)>" +
-//            "<!ATTLIST "+XML_ELEMENT_WORK+" " +
-//            XML_ATTR_YEAR+" CDATA #REQUIRED " +
-//            XML_ATTR_PATH+" CDATA #REQUIRED " +
-//            XML_ATTR_ARG+" CDATA '' " +
-//            XML_ATTR_ICON+" CDATA '' " +
-//            XML_ATTR_PICT+" CDATA '' " +
-//            XML_ATTR_INFO+" CDATA '' " +
-//            XML_ATTR_IDEV+" CDATA ''>";
-//        return latestDTD;
-//    }
-
     Work() {}
 
+    /**
+     * 指定された作品オブジェクトのコピーを作成します。
+     * コマンドライン引数の配列まで深くコピーします。
+     * @param that コピー元の作品オブジェクト
+     */
     public Work(Work that) {
     	this.year             = that.year;
     	this.name             = that.name;
-    	this.path             = that.path;
+    	this.launchedFile             = that.launchedFile;
     	this.args             = Arrays.copyOf(that.args, that.args.length);
-    	this.summaryImagePath = that.summaryImagePath;
-    	this.detailTextPath   = that.detailTextPath;
-    	this.iconPath         = that.iconPath;
+    	this.summaryImageFile = that.summaryImageFile;
+    	this.detailTextFile   = that.detailTextFile;
+    	this.iconFile         = that.iconFile;
     	this.inputDeviceName  = that.inputDeviceName;
     }
 
@@ -191,8 +171,8 @@ public class Work implements Comparable<Work> {
      * 作品を開くパスを取得します。
      * @return 作品を開くパス
      */
-    public String getPath() {
-    	return path;
+    public File getLaunchedFile() {
+    	return new File(launchedFile.getPath());
     }
 
     /**
@@ -201,31 +181,31 @@ public class Work implements Comparable<Work> {
      * @return 作品へのコマンドライン引数
      */
     public String[] getArgs() {
-    	return args;
+    	return Arrays.copyOf(args, args.length);
     }
 
     /**
      * 作品ボタンに使用するアイコン画像へのパスを取得します。
      * @return 作品ボタンに使用するアイコン画像へのパス
      */
-    public String getIconPath() {
-    	return iconPath;
+    public File getIconFile() {
+    	return new File(iconFile.getPath());
     }
 
     /**
      * 作品を説明する画像へのパスを取得します。
      * @return 作品を説明する画像へのパス
      */
-    public String getSummaryImagePath() {
-    	return summaryImagePath;
+    public File getSummaryImageFile() {
+    	return new File(summaryImageFile.getPath());
     }
 
     /**
      * 作品の情報テキストファイルへのパスを取得します。
      * @return 作品の情報テキストファイルへのパス
      */
-    public String getDetailTextPath() {
-    	return detailTextPath;
+    public File getDetailTextFile() {
+    	return new File(detailTextFile.getPath());
     }
 
     /**
@@ -252,18 +232,22 @@ public class Work implements Comparable<Work> {
 	 */
 	public void setPropertiesByXMLAtts(org.xml.sax.Attributes atts) {
 		this.year = Integer.parseInt(atts.getValue("year"));
-		this.path = getPropertyFromXMLAttr(atts,
+		final String path = getPropertyFromXMLAttr(atts,
 				/* 旧名 */ "path");
 		final String arg = getPropertyFromXMLAttr(atts,
 				/* 旧名 */ "args");
-		this.iconPath = getPropertyFromXMLAttr(atts,
+		final String iconPath = getPropertyFromXMLAttr(atts,
 				/* 旧名 */ "icon");
-		this.summaryImagePath = getPropertyFromXMLAttr(atts,
+		final String summaryImagePath = getPropertyFromXMLAttr(atts,
 				/* 旧名 */ "pict");
-		this.detailTextPath = getPropertyFromXMLAttr(atts,
+		final String detailTextPath = getPropertyFromXMLAttr(atts,
 				/* 旧名 */ "info", "crdt", "copy");
 		this.inputDeviceName = getPropertyFromXMLAttr(atts,
 				/* 旧名 */ "idev");
+		this.launchedFile     =             path == null ? null : new File(path);
+		this.iconFile         =         iconPath == null ? null : new File(iconPath);
+		this.summaryImageFile = summaryImagePath == null ? null : new File(summaryImagePath);
+		this.detailTextFile   =   detailTextPath == null ? null : new File(detailTextPath);
 		this.args = arg == null || arg.isEmpty() ?
 				new String[0] : new String[]{arg};
 	}
@@ -276,7 +260,7 @@ public class Work implements Comparable<Work> {
 	 * @param attNames 取得する属性 (優先順)
 	 * @return 要素の属性値、属性がなければ <code>null</code>
 	 */
-	private String getPropertyFromXMLAttr(org.xml.sax.Attributes atts,
+	private static String getPropertyFromXMLAttr(org.xml.sax.Attributes atts,
 			String... attNames) {
 		String value;
 
@@ -300,13 +284,26 @@ public class Work implements Comparable<Work> {
 		return null;
 	}
 
+	/**
+	 * XML 要素から、指定した属性の値を {@link File} 型で取得します。
+	 * @param element DOM 要素
+	 * @param attNames 取得する属性 (優先順)
+	 * @return 要素の属性値をパスとしたファイル、属性がなければ <code>null</code>
+	 */
+	private static File getFileFromXMLAttr
+	(org.w3c.dom.Element element, String... attNames) {
+		final String path = getPropertyFromXMLAttr(element, attNames);
+
+		return path != null ? new File(path) : null;
+	}
+
     /**
      * この作品オブジェクトのハッシュコードを返します。
      * @return この作品オブジェクトのハッシュコード
      */
     @Override
     public int hashCode() {
-    	return this.path.hashCode();
+    	return this.launchedFile.hashCode();
     }
 
     /**
@@ -320,8 +317,8 @@ public class Work implements Comparable<Work> {
     public int compareTo(Work that) {
     	synchronized(this) { synchronized(that) {
 	    	// パス順
-	    	if(!this.path.equals(that.path))
-	    		return this.path.compareTo(that.path);
+	    	if(!this.launchedFile.equals(that.launchedFile))
+	    		return this.launchedFile.compareTo(that.launchedFile);
 	    	// パスが同じなら引数順
 	    	if(this.args == null)
 	    		return that.args != null && that.args.length > 0 ? -1 : 0;
@@ -348,7 +345,7 @@ public class Work implements Comparable<Work> {
     		return false;
     	
     	final Work that = (Work)obj;
-    	return	this.path.equals(that.path) &&
+    	return	this.launchedFile.equals(that.launchedFile) &&
     			Arrays.equals(this.args, that.args);
     }
 
@@ -368,19 +365,19 @@ public class Work implements Comparable<Work> {
 		it.name = getPropertyFromXMLAttr(element, XML_ATTR_NAME,
 				/* 旧名 */ null);
 		// 開くパス
-		it.path = getPropertyFromXMLAttr(element,
+		it.launchedFile = getFileFromXMLAttr(element,
 				/* 旧名 */ "path");
 		// コマンドライン引数
 		args.add(getPropertyFromXMLAttr(element,
 				/* 旧名 */ "args"));
 		// アイコンパス
-		it.iconPath = getPropertyFromXMLAttr(element, XML_ATTR_ICON,
+		it.iconFile = getFileFromXMLAttr(element, XML_ATTR_ICON,
 				/* 旧名 */ "icon");
 		// 概要パス
-		it.summaryImagePath = getPropertyFromXMLAttr(element, XML_ATTR_PICT,
+		it.summaryImageFile = getFileFromXMLAttr(element, XML_ATTR_PICT,
 				/* 旧名 */ "pict");
 		// 詳細パス
-		it.detailTextPath = getPropertyFromXMLAttr(element, XML_ATTR_INFO,
+		it.detailTextFile = getFileFromXMLAttr(element, XML_ATTR_INFO,
 				/* 旧名 */ "info", "crdt", "copy");
 		// 入力デバイス名
 		it.inputDeviceName = getPropertyFromXMLAttr(element, XML_ATTR_IDEV,
@@ -396,10 +393,11 @@ public class Work implements Comparable<Work> {
 						getAttribute(XML_ATTR_ARG_V));
 			// 開くパス (属性から取得済みなら名前)
 			if(n.getNodeType() == org.w3c.dom.Node.CDATA_SECTION_NODE) {
-				if(it.path != null)
-					it.name = n.getTextContent();
+				if(it.launchedFile != null)
+					it.name = ((org.w3c.dom.CDATASection)n).getData();
 				else
-					it.path = n.getTextContent();
+					it.launchedFile =
+					new File(((org.w3c.dom.CDATASection)n).getData());
 			}
 		}
 		// コマンドライン引数から null を削除
@@ -412,6 +410,11 @@ public class Work implements Comparable<Work> {
 		return it;
 	}
 
+	/**
+	 * 新しい DOM 要素に、この作品オブジェクトのデータを保存します。 
+	 * @param document DOM ドキュメント
+	 * @return この作品オブジェクトのデータを保持した新しい DOM 要素
+	 */
 	org.w3c.dom.Element saveToXMLElement(org.w3c.dom.Document document) {
 		final org.w3c.dom.Element elmWork =
 				document.createElement(XML_ELEMENT_WORK);
@@ -420,10 +423,10 @@ public class Work implements Comparable<Work> {
 		elmWork.setAttribute(XML_ATTR_YEAR, Integer.toString(this.year));
 		elmWork.setAttribute(XML_ATTR_NAME,                  this.name);
 		elmWork.setAttribute(XML_ATTR_IDEV,                  this.inputDeviceName);
-		elmWork.setAttribute(XML_ATTR_PATH,                  this.path);
-		elmWork.setAttribute(XML_ATTR_ICON,                  this.iconPath);
-		elmWork.setAttribute(XML_ATTR_PICT,                  this.summaryImagePath);
-		elmWork.setAttribute(XML_ATTR_INFO,                  this.detailTextPath);
+		elmWork.setAttribute(XML_ATTR_PATH,                  this.launchedFile.getPath());
+		elmWork.setAttribute(XML_ATTR_ICON,                  this.iconFile.getPath());
+		elmWork.setAttribute(XML_ATTR_PICT,                  this.summaryImageFile.getPath());
+		elmWork.setAttribute(XML_ATTR_INFO,                  this.detailTextFile.getPath());
 
 		// コマンドライン引数
 		for(String argv : this.args) {

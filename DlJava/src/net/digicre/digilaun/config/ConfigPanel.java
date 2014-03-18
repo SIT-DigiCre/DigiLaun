@@ -1,6 +1,3 @@
-/**
- * 
- */
 package net.digicre.digilaun.config;
 
 import java.util.LinkedHashSet;
@@ -9,8 +6,8 @@ import javax.swing.JPanel;
 import net.digicre.digilaun.Config;
 
 /**
- * @author p10090
  * 環境設定を行うパネルの抽象クラスです。
+ * @author p10090
  */
 @SuppressWarnings("serial")
 abstract public class ConfigPanel extends JPanel {
@@ -44,15 +41,6 @@ abstract public class ConfigPanel extends JPanel {
 			configListeners.remove(listener);
 		}
 	}
-
-//	/**
-//	 * このパネルに追加されたコンフィグリスナーをすべて削除します。
-//	 */
-//	public void removeAllConfigListeners() {
-//		synchronized(this.configListeners) {
-//			configListeners.clear();
-//		}
-//	}
 
 	/**
 	 * configChanged イベントを発生させ、リスナーに通知します。

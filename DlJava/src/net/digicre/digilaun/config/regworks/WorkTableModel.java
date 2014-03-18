@@ -1,5 +1,6 @@
 package net.digicre.digilaun.config.regworks;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -23,13 +24,13 @@ public class WorkTableModel extends AbstractTableModel {
 	 * この表モデルの列データを扱うクラスです。
 	 * @author p10090
 	 */
-	private abstract class Column {
+	private abstract class Column<CellType> {
 		/**
 		 * この列からデータを取得します。
 		 * @param row 行番号
 		 * @return この列の <code>row</code> 行目から取得したデータ
 		 */
-		final Object get(int row) {
+		final CellType get(int row) {
 			return this.get(WorkTableModel.this.relatedList.get(row));
 		}
 
@@ -38,10 +39,11 @@ public class WorkTableModel extends AbstractTableModel {
 		 * @param row 行番号
 		 * @param value この列の <code>row</code> 行目に設定するデータ
 		 */
+		@SuppressWarnings("unchecked")
 		final void set(int row, Object value) {
 			this.set(
 					(WritableWork)WorkTableModel.this.relatedList.get(row),
-					value);
+					(CellType)value);
 		}
 
 		/**
@@ -49,14 +51,14 @@ public class WorkTableModel extends AbstractTableModel {
 		 * @param work 取得元の作品オブジェクト
 		 * @return <code>work</code> から取得したデータ
 		 */
-		abstract Object get(Work work);
+		abstract CellType get(Work work);
 
 		/**
 		 * この列にデータを設定します。
 		 * @param work 設定先の作品オブジェクト
 		 * @param value <code>work</code> に設定するデータ
 		 */
-		abstract void set(WritableWork work, Object value);
+		abstract void set(WritableWork work, CellType value);
 
 		/**
 		 * この列の名前を取得します。
@@ -68,7 +70,7 @@ public class WorkTableModel extends AbstractTableModel {
 		 * この列の型を取得します。
 		 * @return 列の型
 		 */
-		abstract Class<?> getType();
+		abstract Class<CellType> getType();
 
 		/**
 		 * この列のファイルフィルターを取得します。
@@ -82,35 +84,35 @@ public class WorkTableModel extends AbstractTableModel {
 	/**
 	 * この表モデルにある列の配列です。
 	 */
-	Column[] columns = {
-			new Column() {
+	Column<?>[] columns = {
+			new Column<Integer>() {
 				@Override String getName()
 				{ return "制作年度"; }
 				@Override Class<Integer> getType()
 				{ return Integer.class; }
-				@Override Object get(Work work)
+				@Override Integer get(Work work)
 				{ return work.getYear(); }
-				@Override void set(WritableWork work, Object value)
-				{ work.setYear((Integer)value); }
-			}, new Column() {
+				@Override void set(WritableWork work, Integer value)
+				{ work.setYear(value); }
+			}, new Column<String>() {
 				@Override String getName()
 				{ return "名前"; }
 				@Override Class<String> getType()
 				{ return String.class; }
-				@Override Object get(Work work)
+				@Override String get(Work work)
 				{ return work.getName(); }
-				@Override void set(WritableWork work, Object value)
-				{ work.setName((String)value); }
-			}, new Column() {
+				@Override void set(WritableWork work, String value)
+				{ work.setName(value); }
+			}, new Column<String>() {
 				@Override String getName()
 				{ return "入力デバイス"; }
 				@Override Class<String> getType()
 				{ return String.class; }
-				@Override Object get(Work work)
+				@Override String get(Work work)
 				{ return work.getInputDeviceName(); }
-				@Override void set(WritableWork work, Object value)
-				{ work.setInputDeviceName((String)value); }
-			}, new Column() {
+				@Override void set(WritableWork work, String value)
+				{ work.setInputDeviceName(value); }
+			}, new Column<File>() {
 				final FileFilter[] fileFilters =
 					{
 						new FileNameExtensionFilter(
@@ -125,12 +127,12 @@ public class WorkTableModel extends AbstractTableModel {
 				{ return this.fileFilters; }
 				@Override String getName()
 				{ return "パス"; }
-				@Override Class<String> getType()
-				{ return String.class; }
-				@Override Object get(Work work)
-				{ return work.getPath(); }
-				@Override void set(WritableWork work, Object value)
-				{ work.setPath((String)value); }
+				@Override Class<File> getType()
+				{ return File.class; }
+				@Override File get(Work work)
+				{ return work.getLaunchedFile(); }
+				@Override void set(WritableWork work, File value)
+				{ work.setPath(value); }
 //			}, new Column() {
 //				@Override String getName()
 //				{ return "コマンドライン引数"; }
@@ -140,7 +142,7 @@ public class WorkTableModel extends AbstractTableModel {
 //				{ return work.getArgs(); }
 //				@Override void set(WritableWorkBean work, Object value)
 //				{ work.setArgs((String[])value); }
-			}, new Column() {
+			}, new Column<File>() {
 				final FileFilter[] fileFilters =
 					{
 						new FileNameExtensionFilter(
@@ -151,13 +153,13 @@ public class WorkTableModel extends AbstractTableModel {
 				{ return this.fileFilters; }
 				@Override String getName()
 				{ return "アイコン"; }
-				@Override Class<String> getType()
-				{ return String.class; }
-				@Override Object get(Work work)
-				{ return work.getIconPath(); }
-				@Override void set(WritableWork work, Object value)
-				{ work.setIconPath((String)value); }
-			}, new Column() {
+				@Override Class<File> getType()
+				{ return File.class; }
+				@Override File get(Work work)
+				{ return work.getIconFile(); }
+				@Override void set(WritableWork work, File value)
+				{ work.setIconFile(value); }
+			}, new Column<File>() {
 				final FileFilter[] fileFilters =
 					{
 						new FileNameExtensionFilter(
@@ -168,13 +170,13 @@ public class WorkTableModel extends AbstractTableModel {
 				{ return this.fileFilters; }
 				@Override String getName()
 				{ return "概要画像"; }
-				@Override Class<String> getType()
-				{ return String.class; }
-				@Override Object get(Work work)
-				{ return work.getSummaryImagePath(); }
-				@Override void set(WritableWork work, Object value)
-				{ work.setSummaryImagePath((String)value); }
-			}, new Column() {
+				@Override Class<File> getType()
+				{ return File.class; }
+				@Override File get(Work work)
+				{ return work.getSummaryImageFile(); }
+				@Override void set(WritableWork work, File value)
+				{ work.setSummaryImageFile(value); }
+			}, new Column<File>() {
 				final FileFilter[] fileFilters =
 					{
 						new FileNameExtensionFilter(
@@ -186,12 +188,12 @@ public class WorkTableModel extends AbstractTableModel {
 				{ return this.fileFilters; }
 				@Override String getName()
 				{ return "詳細テキスト"; }
-				@Override Class<String> getType()
-				{ return String.class; }
-				@Override Object get(Work work)
-				{ return work.getDetailTextPath(); }
-				@Override void set(WritableWork work, Object value)
-				{ work.setDetailTextPath((String)value); }
+				@Override Class<File> getType()
+				{ return File.class; }
+				@Override File get(Work work)
+				{ return work.getDetailTextFile(); }
+				@Override void set(WritableWork work, File value)
+				{ work.setDetailTextFile(value); }
 			}
 	};
 	private ArrayList<Work> relatedList;
@@ -274,7 +276,9 @@ public class WorkTableModel extends AbstractTableModel {
 	 */
 	@Override
 	public boolean isCellEditable(int row, int col) {
-		return this.relatedList.get(row) instanceof WritableWork;
+		return this.getRowCount() > row &&
+				this.getColumnCount() > col &&
+				this.relatedList.get(row) instanceof WritableWork;
 	}
 
 	/**
@@ -296,8 +300,12 @@ public class WorkTableModel extends AbstractTableModel {
 	 */
 	@Override
 	public void setValueAt(Object aValue, int row, int col) {
+		// 設定前後の値が等価ならイベントを起こさない
+		final boolean changed = !this.getValueAt(row, col).equals(aValue);
+
 		this.columns[col].set(row, aValue);
-		this.fireTableCellUpdated(row, col);
+		if(changed)
+			this.fireTableCellUpdated(row, col);
 	}
 
 	/**
@@ -317,6 +325,11 @@ public class WorkTableModel extends AbstractTableModel {
 		});
 	}
 
+	/**
+	 * この表モデルから行を削除します。
+	 * @param firstRow 削除する行範囲の初め
+	 * @param lastRow 削除する行範囲の終わり
+	 */
 	public void removeRow(final int firstRow, final int lastRow) {
 		if(firstRow > lastRow)
 			return;

@@ -1,14 +1,15 @@
 package net.digicre.digilaun.work;
 
+import java.io.File;
 import java.util.GregorianCalendar;
 
 /**
- * データを編集可能な作品のマメのクラスです。
+ * データを編集可能な作品のクラスです。
  * @author p10090
  */
 public class WritableWork extends Work {
 	/**
-	 * 新しい作品のマメを作成します。
+	 * 新しい作品を作成します。
 	 */
 	public WritableWork() {
 		this.setDefaultValues();
@@ -22,26 +23,22 @@ public class WritableWork extends Work {
 
 		this.name = "";
 		this.year = gc.get(GregorianCalendar.YEAR);
-		this.path = "";
 		this.args = new String[0];
-		this.iconPath = "";
-		this.summaryImagePath = "";
-		this.detailTextPath = "";
 		this.inputDeviceName = "キーボードまたはゲームパッド";
 	}
 
 	/**
-	 * 既存の作品オブジェクトと同じ内容を持つ、新しい作品のマメを作成します。
+	 * 既存の作品オブジェクトと同じ内容を持つ、新しい作品を作成します。
 	 * @param work コピー元の作品オブジェクト
 	 */
 	public WritableWork(Work work) {
 		this.name = work.name;
 		this.year = work.year;
-		this.path = work.path;
+		this.launchedFile = new File(work.launchedFile.getPath());
 		this.args = work.args;
-		this.iconPath = work.iconPath;
-		this.summaryImagePath = work.summaryImagePath;
-		this.detailTextPath = work.detailTextPath;
+		this.iconFile = new File(work.iconFile.getPath());
+		this.summaryImageFile = new File(work.summaryImageFile.getPath());
+		this.detailTextFile = new File(work.detailTextFile.getPath());
 		this.inputDeviceName = work.inputDeviceName;
 	}
 
@@ -62,11 +59,11 @@ public class WritableWork extends Work {
 	}
 
 	/**
-	 * 開くファイルへのパスを設定します。
-	 * @param path 開くファイルへのパス
+	 * 開くファイルを設定します。
+	 * @param file 開くファイル
 	 */
-	public void setPath(String path) {
-		this.path = path;
+	public void setPath(File file) {
+		this.launchedFile = file;
 	}
 
 	/**
@@ -78,27 +75,27 @@ public class WritableWork extends Work {
 	}
 
 	/**
-	 * アイコンへのパスを設定します。
-	 * @param path アイコンへのパス
+	 * アイコンファイルを設定します。
+	 * @param file アイコンファイル
 	 */
-	public void setIconPath(String path) {
-		this.iconPath = path;
+	public void setIconFile(File file) {
+		this.iconFile = file;
 	}
 
 	/**
-	 * 概要イメージへのパスを設定します。
-	 * @param path 概要イメージへのパス
+	 * 概要イメージファイルを設定します。
+	 * @param file 概要イメージ
 	 */
-	public void setSummaryImagePath(String path) {
-		this.summaryImagePath = path;
+	public void setSummaryImageFile(File file) {
+		this.summaryImageFile = file;
 	}
 
 	/**
-	 * 詳細テキストへのパスを設定します。
-	 * @param path 詳細テキストへのパス
+	 * 詳細テキストファイルを設定します。
+	 * @param file 詳細テキストファイル
 	 */
-	public void setDetailTextPath(String path) {
-		this.detailTextPath = path;
+	public void setDetailTextFile(File file) {
+		this.detailTextFile = file;
 	}
 
 	/**

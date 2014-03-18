@@ -179,7 +179,9 @@ class SummaryDialog extends JDialog {
 	}
 
 	/**
-	 * 「はじめる!」ボタンが押されたときのイベント処理です。
+	 * 「はじめる」ボタンが押されたときのイベント処理です。
+	 * 作品を起動します。
+	 * @see #startWorkTrial()
 	 */
 	private void onClickStartButton() {
 		synchronized(this) {
@@ -191,6 +193,8 @@ class SummaryDialog extends JDialog {
 
 	/**
 	 * 「もどる」ボタンが押されたときのイベント処理です。
+	 * このダイアログを閉じます。
+	 * ただし、プロセスが実行中ならまず強制終了の確認を行います。
 	 */
 	private void onClickBackButton() {
 		synchronized(this) {
@@ -225,6 +229,8 @@ class SummaryDialog extends JDialog {
 
 	/**
 	 * 「もっと詳しい情報」ボタンが押されたときのイベント処理です。
+	 * 情報ダイアログを開きます。
+	 * @see InformationDialog
 	 */
 	protected void onClickMoreInfoButton() {
 		InformationDialog.open(work);
@@ -232,6 +238,7 @@ class SummaryDialog extends JDialog {
 
 	/**
 	 * このダイアログが閉じるよう要求を受けたときのイベント処理です。
+	 * プロセスが実行中出ないときのみ、このダイアログを閉じます。
 	 */
 	private void onWindowClosing() {
 		if(process != null) {
@@ -264,6 +271,7 @@ class SummaryDialog extends JDialog {
 	 */
 	private void onWindowClosed() {
 		synchronized(SummaryDialog.this) {
+			// ログを終了
 			if(SummaryDialog.this.logger != null)
 				SummaryDialog.this.logger.close();
 		}
@@ -292,8 +300,8 @@ class SummaryDialog extends JDialog {
 		this.summaryImageArea.setWork(work);
 		// 情報テキストがありそうでなければ情報ボタンを無効化
 		this.btni.setEnabled(
-				work.getDetailTextPath() != null &&
-				!work.getDetailTextPath().isEmpty()
+				work.getDetailTextFile() != null &&
+				work.getDetailTextFile().exists()
 				);
 
 		// 中央に表示
@@ -306,10 +314,10 @@ class SummaryDialog extends JDialog {
 	 */
 	private void startWorkTrial() {
 		// 情報を準備
-		final File file = new File(work.getPath());
+		final File file = work.getLaunchedFile();
 		File pdir = file.getParentFile();
 		String[] command = new String[work.getArgs().length+1];
-		command[0] = work.getPath();
+		command[0] = work.getLaunchedFile().getPath();
 		System.arraycopy(work.getArgs(), 0, command, 1, work.getArgs().length);
 		final ProcessBuilder pb = new ProcessBuilder(command);
 		pb.directory(pdir != null ? pdir : new File("."));
@@ -369,6 +377,9 @@ class SummaryDialog extends JDialog {
 		}
 	}
 
+	/**
+	 * プロセスの標準入出力を Digi Laun の標準入出力に接続します。
+	 */
 	private void connectProcessStream() {
 //		(stdinConnector = new StreamConnector(
 //				System.in, this.process.getOutputStream(), 1)
@@ -381,10 +392,14 @@ class SummaryDialog extends JDialog {
 		).connect();
 	}
 
+	/**
+	 * プロセスの標準入出力を Digi Laun の標準入出力から切断します。
+	 */
 	private void disconnectProcessStream() {
 //		stdinConnector.disconnect();
 //		stdoutConnector.disconnect();
 //		stderrConnector.disconnect();
+		// 自然に切れるのを待つ
 		while(stdoutConnector.isConnecting())
 			Thread.yield();
 		while(stderrConnector.isConnecting())

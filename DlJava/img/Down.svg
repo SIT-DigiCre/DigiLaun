@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="64"
+   height="64"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="Down.svg"
+   inkscape:export-filename="C:\Users\p10090\Dropbox\git\DigiLaun\DlJava\img\CollapseButton.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
+  <defs
+     id="defs4">
+    <linearGradient
+       gradientUnits="userSpaceOnUse"
+       y2="64"
+       x2="0"
+       y1="1.1368684e-013"
+       x1="0"
+       id="linearGradient3819"
+       xlink:href="#linearGradient3813"
+       inkscape:collect="always" />
+    <radialGradient
+       r="32"
+       fy="64"
+       fx="64"
+       cy="64"
+       cx="64"
+       gradientTransform="matrix(0,-4,4,0,-192,320)"
+       gradientUnits="userSpaceOnUse"
+       id="radialGradient3799"
+       xlink:href="#linearGradient3781"
+       inkscape:collect="always" />
+    <radialGradient
+       gradientTransform="matrix(0,-2,2,0,-64,192)"
+       gradientUnits="userSpaceOnUse"
+       r="32"
+       fy="64"
+       fx="64"
+       cy="64"
+       cx="64"
+       id="radialGradient3789"
+       xlink:href="#linearGradient3781"
+       inkscape:collect="always" />
+    <linearGradient
+       gradientUnits="userSpaceOnUse"
+       y2="0.5"
+       x2="64"
+       y1="0.5"
+       x1="0"
+       id="linearGradient3777"
+       xlink:href="#linearGradient3771"
+       inkscape:collect="always" />
+    <linearGradient
+       id="linearGradient3771">
+      <stop
+         id="stop3773"
+         offset="0"
+         style="stop-color:fuchsia;stop-opacity:1;" />
+      <stop
+         id="stop3775"
+         offset="1"
+         style="stop-color:fuchsia;stop-opacity:0;" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient3781">
+      <stop
+         style="stop-color:fuchsia;stop-opacity:0;"
+         offset="0"
+         id="stop3801" />
+      <stop
+         id="stop3803"
+         offset="0.5"
+         style="stop-color:fuchsia;stop-opacity:0;" />
+      <stop
+         style="stop-color:white;stop-opacity:1;"
+         offset="0.69999999"
+         id="stop3791" />
+      <stop
+         id="stop3785"
+         offset="1"
+         style="stop-color:white;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient3813">
+      <stop
+         id="stop3815"
+         offset="0"
+         style="stop-color:fuchsia;stop-opacity:1;" />
+      <stop
+         id="stop3817"
+         offset="1"
+         style="stop-color:black;stop-opacity:1;" />
+    </linearGradient>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="8"
+     inkscape:cx="32.437879"
+     inkscape:cy="30.575904"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:window-width="1046"
+     inkscape:window-height="746"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid2985"
+       empspacing="2"
+       visible="true"
+       enabled="true"
+       snapvisiblegridlinesonly="true"
+       spacingx="4px"
+       spacingy="4px" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="レイヤー 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-988.36218)">
+    <path
+       sodipodi:type="arc"
+       style="fill:none;fill-opacity:0.50196078000000000;stroke:#cf0;stroke-width:2;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="path3757"
+       sodipodi:cx="32"
+       sodipodi:cy="32"
+       sodipodi:rx="28"
+       sodipodi:ry="28"
+       d="M 60,32 C 60,47.463973 47.463973,60 32,60 16.536027,60 4,47.463973 4,32 4,16.536027 16.536027,4 32,4 47.463973,4 60,16.536027 60,32 z"
+       transform="translate(0,988.36218)" />
+    <path
+       sodipodi:type="star"
+       style="fill:#3c0;fill-opacity:1;stroke:none"
+       id="path3777"
+       sodipodi:sides="3"
+       sodipodi:cx="32"
+       sodipodi:cy="32"
+       sodipodi:r1="24"
+       sodipodi:r2="12"
+       sodipodi:arg1="1.5707963"
+       sodipodi:arg2="2.6179938"
+       inkscape:flatsided="true"
+       inkscape:rounded="0"
+       inkscape:randomized="0"
+       d="M 32.000001,56 11.21539,20.000001 l 41.569219,-2e-6 z"
+       transform="translate(0,988.36218)"
+       inkscape:transform-center-y="-6" />
+    <path
+       sodipodi:type="star"
+       style="fill:none;fill-opacity:1;stroke:#cf0;stroke-opacity:1;stroke-width:1.41399999999999990;stroke-miterlimit:4;stroke-dasharray:none"
+       id="path3761"
+       sodipodi:sides="3"
+       sodipodi:cx="32"
+       sodipodi:cy="32"
+       sodipodi:r1="24"
+       sodipodi:r2="12"
+       sodipodi:arg1="1.5707963"
+       sodipodi:arg2="2.6179939"
+       inkscape:flatsided="true"
+       inkscape:rounded="0"
+       inkscape:randomized="0"
+       d="M 32.000001,56 11.21539,20.000001 l 41.569219,-2e-6 z"
+       transform="translate(0,988.36218)"
+       inkscape:transform-center-y="6" />
+    <path
+       sodipodi:type="star"
+       style="fill:none;fill-opacity:1;stroke:#cf0;stroke-opacity:1;stroke-width:1.41399999999999990;stroke-miterlimit:4;stroke-dasharray:none"
+       id="path3763"
+       sodipodi:sides="3"
+       sodipodi:cx="32"
+       sodipodi:cy="32"
+       sodipodi:r1="24"
+       sodipodi:r2="12"
+       sodipodi:arg1="-1.5707963"
+       sodipodi:arg2="-0.52359878"
+       inkscape:flatsided="true"
+       inkscape:rounded="0"
+       inkscape:randomized="0"
+       d="m 32.000001,8 20.784608,36.000001 -41.569219,-2e-6 z"
+       transform="translate(0,988.36218)"
+       inkscape:transform-center-y="-6"
+       inkscape:export-filename="C:\Users\p10090\Dropbox\git\DigiLaun\DlJava\img\CollapseButton.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+  </g>
+</svg>

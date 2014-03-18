@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.FlowLayout;
+import java.awt.Rectangle;
 import java.io.File;
 import java.io.IOException;
 import javax.swing.JButton;
@@ -100,6 +101,13 @@ public class InformationDialog extends JDialog {
 		}
 	}
 
+	/**
+	 * ハイパーリンクの状態が変化した時の処理です。
+	 * ハイパーリンクがアクティブ化された時にリンク先を表示します。
+	 * リンクが file プロトコルかつ {@link JEditorPane} で表示できればこのダイアログで、
+	 * それ以外のリンクは既定の Web ブラウザーで表示します。
+	 * @param e イベントオブジェクト
+	 */
 	private void onHyperLinkUpdate(HyperlinkEvent e) {
 		// マウスオーバー、マウスアウトイベントは無視
 		//クリックのみ処理
@@ -113,6 +121,7 @@ public class InformationDialog extends JDialog {
 				Desktop desktop = Desktop.getDesktop();
 				desktop.browse(e.getURL().toURI());
 			} catch (Exception ex) {
+				ex.printStackTrace();
 			}
 			return;
 		}
@@ -121,6 +130,7 @@ public class InformationDialog extends JDialog {
 			((JEditorPane)e.getSource()).setPage(
 					e.getURL());
 		} catch (IOException ex) {
+			ex.printStackTrace();
 			javax.swing.JOptionPane.showMessageDialog(
 					InformationDialog.this,
 					String.format("%s\n\n%s",
@@ -139,11 +149,11 @@ public class InformationDialog extends JDialog {
 	 */
 	static void open(final Work work) {
 		// 拡張子が txt でも UTF でも HTML でもなければ
-		if(!fileCanShowInEditorPane(work.getDetailTextPath())) {
+		if(!fileCanShowInEditorPane(work.getDetailTextFile())) {
 			// 普通にオープンを試みる
 			Desktop d = Desktop.getDesktop();
 			try {
-				d.open(new File(work.getDetailTextPath()));
+				d.open(work.getDetailTextFile());
 				return;
 			} catch (Exception e) {
 			}
@@ -161,7 +171,7 @@ public class InformationDialog extends JDialog {
 				// テキスト領域が既定値になるようサイズを調整
 				it.pack();
 				{
-					java.awt.Rectangle rect =
+					Rectangle rect =
 							it.scrollPane.getViewportBorderBounds();
 					rect.x =
 					rect.y = 0;
@@ -173,9 +183,8 @@ public class InformationDialog extends JDialog {
 				}
 				it.pack();
 				// テキストペインのセット
-				if(work.getDetailTextPath() != null &&
-						!work.getDetailTextPath().isEmpty()) {
-					File file = new File(work.getDetailTextPath());
+				if(work.getDetailTextFile() != null) {
+					File file = work.getDetailTextFile();
 					try {
 						it.editorPane.setContentType(
 								"text/plain;charset=Shift_JIS");

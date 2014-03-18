@@ -9,15 +9,25 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 /**
- * ウィンドウをデスクトップ領域全体にリサイズするイベントアダプターです。
+ * 何かしらのウィンドウイベントが発生するたびに、
+ * イベント発生元ウィンドウをデスクトップ領域全体にリサイズするイベントアダプターです。
+ * 複数のインスタンスを作る意味が特にないため、
+ * 今のところはシングルトンクラスです。
  * @author p10090
  *
  */
 public class WindowMaximizer extends WindowAdapter {
+	/**
+	 * このクラスのインスタンスです。
+	 */
 	private static WindowMaximizer instance;
 
 	private WindowMaximizer() {}
 
+	/**
+	 * このクラスのインスタンスを取得します。
+	 * @return このクラスのインスタンス
+	 */
 	public synchronized static WindowMaximizer getInstance() {
 		if(instance == null)
 			instance = new WindowMaximizer();

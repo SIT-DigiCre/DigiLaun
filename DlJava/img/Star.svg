@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="64"
+   height="64"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="Star.svg"
+   inkscape:export-filename="C:\Users\p10090\Dropbox\git\DigiLaun\DlJava\img\LabelBackNewest.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
+  <defs
+     id="defs4">
+    <linearGradient
+       id="linearGradient4222">
+      <stop
+         style="stop-color:#cc0;stop-opacity:1;"
+         offset="0"
+         id="stop4224" />
+      <stop
+         style="stop-color:#330;stop-opacity:1;"
+         offset="1"
+         id="stop4226" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient4214">
+      <stop
+         style="stop-color:#ff9;stop-opacity:1;"
+         offset="0"
+         id="stop4216" />
+      <stop
+         style="stop-color:yellow;stop-opacity:1;"
+         offset="1"
+         id="stop4218" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4214"
+       id="linearGradient4220"
+       x1="16.841217"
+       y1="15.184081"
+       x2="47.122612"
+       y2="48.814976"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4222"
+       id="linearGradient4228"
+       x1="16.841217"
+       y1="15.184081"
+       x2="47.122612"
+       y2="48.814976"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="black"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="8.3880108"
+     inkscape:cx="24.998441"
+     inkscape:cy="31.940655"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:window-width="1046"
+     inkscape:window-height="746"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid2985"
+       empspacing="2"
+       visible="true"
+       enabled="true"
+       snapvisiblegridlinesonly="true"
+       spacingx="8px"
+       spacingy="8px" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="レイヤー 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-988.36218)">
+    <path
+       sodipodi:type="star"
+       style="fill:url(#linearGradient4220);fill-opacity:1;stroke:url(#linearGradient4228);stroke-linejoin:round;stroke-opacity:1;stroke-width:2.00000001;stroke-miterlimit:4;stroke-dasharray:none"
+       id="path2989"
+       sodipodi:sides="5"
+       sodipodi:cx="32"
+       sodipodi:cy="32"
+       sodipodi:r1="25.298222"
+       sodipodi:r2="12.649111"
+       sodipodi:arg1="-1.2490458"
+       sodipodi:arg2="-0.62072724"
+       inkscape:flatsided="false"
+       inkscape:rounded="0"
+       inkscape:randomized="0"
+       d="M 39.999999,7.9999995 42.289491,24.642937 57.297493,32.192044 42.17661,39.51243 39.634711,56.11869 28,44 11.421018,46.714127 19.351254,31.903978 11.646779,16.97514 28.182645,19.940655 z"
+       transform="matrix(0.99862953,-0.05233596,0.05233596,0.99862953,-1.6128105,990.08031)"
+       inkscape:transform-center-x="-2.3592552"
+       inkscape:transform-center-y="0.059344942"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:none;stroke:yellow;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:none;marker-mid:none;stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 0.06194128,1022.0365 7.98903622,-0.4187"
+       id="path3759"
+       inkscape:connector-curvature="0"
+       inkscape:transform-center-x="28"
+       inkscape:transform-center-y="0.5"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:none;stroke:yellow;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:none;marker-mid:none;stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 24.192671,1050.9014 2.070555,-7.7273"
+       id="path3759-1"
+       inkscape:connector-curvature="0"
+       inkscape:transform-center-x="8.176948"
+       inkscape:transform-center-y="26.7841"
+       inkscape:export-filename="C:\Users\p10090\Dropbox\git\DigiLaun\DlJava\img\path3759-9.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:none;stroke:yellow;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:none;marker-mid:none;stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 59.101694,1036.8715 -6.709365,-4.3571"
+       id="path3759-4"
+       inkscape:connector-curvature="0"
+       inkscape:transform-center-x="-22.946368"
+       inkscape:transform-center-y="16.05345"
+       inkscape:export-filename="C:\Users\p10090\Dropbox\git\DigiLaun\DlJava\img\path3759-9.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:none;stroke:yellow;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:none;marker-mid:none;stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 56.54593,999.33562 -6.217172,5.03448"
+       id="path3759-0"
+       inkscape:connector-curvature="0"
+       inkscape:transform-center-x="-22.358583"
+       inkscape:transform-center-y="-16.8625"
+       inkscape:export-filename="C:\Users\p10090\Dropbox\git\DigiLaun\DlJava\img\path3759-9.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:none;stroke:yellow;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:none;marker-mid:none;stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 20.057354,990.16702 2.866943,7.46864"
+       id="path3759-9"
+       inkscape:connector-curvature="0"
+       inkscape:transform-center-x="9.128004"
+       inkscape:transform-center-y="-26.475075"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+  </g>
+</svg>

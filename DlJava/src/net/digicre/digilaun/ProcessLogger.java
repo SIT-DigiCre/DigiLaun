@@ -69,6 +69,9 @@ class ProcessLogger {
 		"グリニッジ標準時からの経過時間 [ms]",
 	};
 
+	/**
+	 * CSV 出力に使われるライターです。
+	 */
 	private final CSVWriter writer;
 
 	/**
@@ -138,7 +141,7 @@ class ProcessLogger {
 
 		this.writer.writeCSVRecord(new String[] {
 				work.getName(),
-				work.getPath(),
+				work.getLaunchedFile().getPath(),
 				status.toString(),
 				Integer.toString(c.get(Calendar.YEAR)),
 				Integer.toString(c.get(Calendar.MONTH)+1),

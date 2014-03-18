@@ -3,7 +3,7 @@
  */
 package net.digicre.digilaun.config.regworks;
 
-import java.awt.Component;
+import java.io.File;
 
 import javax.swing.DefaultCellEditor;
 import javax.swing.JTable;
@@ -31,18 +31,30 @@ public class FileCellEditor extends DefaultCellEditor implements
 	/**
 	 * このエディターでの編集に使うコンポーネント
 	 * ({@link FileCellEditorPanel}) を返します。
+	 * @param table 編集する表
+	 * @param value 編集するセルの現在の値 ({@link File} または文字列型)
+	 * @param isSelected 編集するセルが選択されているかどうか
+	 * @param row 編集するセルの行番号
+	 * @param column 編集するセルの列番号
 	 * @see javax.swing.table.TableCellEditor#getTableCellEditorComponent(javax.swing.JTable, java.lang.Object, boolean, int, int)
-	 * @see FileCellEditorPanel
 	 */
 	@Override
-	public Component getTableCellEditorComponent(JTable table, Object value,
+	public FileCellEditorPanel getTableCellEditorComponent(JTable table, Object value,
 			boolean isSelected, int row, int column) {
 		final FileCellEditorPanel editorPanel =
 				(FileCellEditorPanel)this.editorComponent.getParent();
 		editorPanel.setBackground(isSelected ?
 				table.getSelectionBackground() : table.getBackground());
-		editorPanel.setValue((String)value);
+		editorPanel.setValue(value);
 		return editorPanel;
 	}
 
+	/**
+	 * このエディターで編集された値を取得します。
+	 * @return このエディターで編集された値
+	 */
+	@Override
+	public File getCellEditorValue() {
+		return new File((String)super.getCellEditorValue());
+	}
 }

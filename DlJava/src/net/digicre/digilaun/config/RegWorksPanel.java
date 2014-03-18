@@ -16,6 +16,10 @@ import javax.swing.event.TableModelListener;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
+/**
+ * 作品データの登録・編集・削除を行う UI を提供します。
+ * @author p10090
+ */
 @SuppressWarnings("serial")
 public class RegWorksPanel extends ConfigPanel implements TableModelListener {
 	private WorkTable workTable;
@@ -58,14 +62,26 @@ public class RegWorksPanel extends ConfigPanel implements TableModelListener {
 
 	}
 
+	/**
+	 * このパネルで編集された作品データをリストとして取得します。
+	 * @return このパネルで編集された作品リスト
+	 */
 	public WorkList getWorkList() {
 		return this.workTable.getEditedList();
 	}
 
+	/**
+	 * 指定されたコンフィグをもとに、このパネルのデータを設定します。
+	 * @param config 既定のコンフィグ
+	 */
 	public void setWorkList(Config config) {
 		this.workTable.setEditedList(config.getWorks());
 	}
 
+	/**
+	 * コンフィグを適用します。
+	 * @param config 適用先のコンフィグオブジェクト
+	 */
 	@Override
 	public void applyConfig(Config config) {
 		config.getWorks().clear();

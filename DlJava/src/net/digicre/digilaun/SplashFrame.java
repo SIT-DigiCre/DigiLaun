@@ -49,6 +49,7 @@ public class SplashFrame extends JFrame {
 					}
 				});
 			} catch (final Exception ex) {
+				// 読めなかったらエラーメッセージを表示して終了
 				java.awt.EventQueue.invokeLater(new Runnable() {
 					@Override
 					public void run() {
@@ -61,11 +62,9 @@ public class SplashFrame extends JFrame {
 						}
 						javax.swing.JOptionPane.showMessageDialog(
 								SplashFrame.this, str);
-//						SplashFrame.this.dispose();
+						System.exit(ErrorCodes.CANNOT_READ_CONFIG);
 					}
 				});
-//				return;
-				System.exit(ErrorCodes.CANNOT_READ_CONFIG);
 			}
 		}
 	}

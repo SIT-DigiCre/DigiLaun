@@ -48,7 +48,7 @@ class WorkButton extends JButton {
 					// アイコンを設定
 					WorkButton.this.setIcon(new ImageIcon(
 							ImageCache.getInstance().getImage(
-									relatedWork.getIconPath()).
+									relatedWork.getIconFile()).
 							getScaledInstance(
 									-1, ICON_HEIGHT,
 									Image.SCALE_SMOOTH)));

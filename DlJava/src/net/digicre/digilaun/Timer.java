@@ -100,11 +100,13 @@ class Timer implements Runnable {
 	void stop() {
 		Thread t;
 
+		// このタイマーからランニングスレッドへの参照を切り離す
 		synchronized(this) {
 			t = running;
 			running = null;
 		}
 
+		// 割り込んですぐに停止させる
 		if(t != null)
 			t.interrupt();
 	}
@@ -114,6 +116,7 @@ class Timer implements Runnable {
 	 * タイマー作動中にこのメソッドを呼び出すと、タイマーをリセットします。
 	 */
 	void start() {
+		// 現行のスレッドを止める
 		stop();
 		// 頒布モードならラベルを初期化して終了
 		if(DigiLaun.config.getMode() == Config.Mode.DISTRIBUTION) {
@@ -194,6 +197,7 @@ class Timer implements Runnable {
 					}
 				}
 
+			// 次の周期まで寝る
 			pt = t;
 			try {
 				Thread.sleep((t+=UPDATE_INTERVAL) - System.currentTimeMillis());

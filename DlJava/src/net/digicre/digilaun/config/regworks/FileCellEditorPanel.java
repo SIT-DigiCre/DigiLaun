@@ -11,6 +11,10 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import javax.swing.border.LineBorder;
 
+/**
+ * {@link FileCellEditor} での編集に使う UI です。
+ * @author p10090
+ */
 @SuppressWarnings("serial")
 public class FileCellEditorPanel extends JPanel {
 	/**
@@ -122,21 +126,19 @@ public class FileCellEditorPanel extends JPanel {
 	}
 
 	/**
-	 * このパネルに入力された値を取得します。
-	 * @return このパネルに入力された値
-	 */
-	public String getValue() {
-		return this.pathTextField.getText();
-	}
-
-	/**
 	 * このパネルに入力された値を設定します。
 	 * @param value このパネルに入力される値
 	 */
-	public void setValue(String value) {
-		this.pathTextField.setText(value);
+	public void setValue(Object value) {
+		this.pathTextField.setText(value instanceof File ?
+				((File)value).getPath() : value.toString());
 	}
-	public JTextField getPathTextField() {
+
+	/**
+	 * このパネル内のテキストフィールドを取得します。
+	 * @return このパネル内のテキストフィールド
+	 */
+	JTextField getPathTextField() {
 		return pathTextField;
 	}
 }

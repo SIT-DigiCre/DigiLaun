@@ -17,10 +17,24 @@ import java.util.Map;
  *
  */
 public class ImageCache {
+	/**
+	 * このクラスのインスタンスです。
+	 */
 	private static ImageCache instance = null;
+
+	/**
+	 * 画像の読み込みに使うツールキットです。
+	 */
 	private Toolkit toolkit;
+
+	/**
+	 * 読み込んだ画像のキャッシュです。
+	 */
 	private Map<File, Image> caches;
 
+	/**
+	 * このクラスは、外部で新しいインスタンスを作成できないシングルトンクラスです。
+	 */
 	private ImageCache() {
 		this.toolkit = Toolkit.getDefaultToolkit();
 		this.caches = new HashMap<File, Image>();

@@ -6,13 +6,19 @@ import java.util.ListIterator;
 
 /**
  * 相対パス構築機能などを提供します。
+ * Java 7 で提供され始めた
+ * <code>java.nio.file.Path</code> に少し似せてあります。
  * @author p10090
  *
  */
 public class Path {
 	private LinkedList<String> pathList;
 
-	private Path() {
+	/**
+	 * 新しい <code>Path</code> を構築します。
+	 * このコンストラクターは内部処理で使われます。
+	 */
+	public Path() {
 		this.pathList = new LinkedList<String>();
 	}
 
@@ -129,6 +135,7 @@ public class Path {
 	}
 
 	/**
+	 * この <code>Path</code> の文字列表現を返します。
 	 * @return この <code>Path</code> の文字列表現
 	 */
 	@Override

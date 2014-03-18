@@ -156,7 +156,7 @@ public class WorkList extends LinkedList<Work> {
 	}
 
 	/**
-	 * このリストに含まれる作品豆の、
+	 * このリストに含まれる作品の、
 	 * 書き換え不可能なコピーをリストに格納して取得します。
 	 * @return この作品リストの1段深いコピー
 	 * (各要素は {@link Work} に変換される)
@@ -170,7 +170,7 @@ public class WorkList extends LinkedList<Work> {
 	}
 
 	/**
-	 * このリストに含まれる作品豆の、
+	 * このリストに含まれる作品の、
 	 * 書き換え可能なコピーをリストに格納して取得します。
 	 * @return この作品リストの1段深いコピー
 	 * (各要素は {@link WritableWork} に変換される)
@@ -183,11 +183,23 @@ public class WorkList extends LinkedList<Work> {
 		return copy;
 	}
 
+	/**
+	 * この作品リストの内容を保持する XML 要素を作成します。
+	 * @param document XML ドキュメント
+	 * @return この作品リストの内容を保持する XML 要素
+	 * @see Config#XML_ELEM_WORKS
+	 */
 	public synchronized
 	Element createXMLElement(Document document) {
 		return this.createXMLElement(document, Config.XML_ELEM_WORKS);
 	}
 
+	/**
+	 * 指定された要素名で、この作品リストの内容を保持する XML 要素を作成します。
+	 * @param document XML ドキュメント
+	 * @param parentElementName 親要素の名前
+	 * @return この作品リストの内容を保持する XML 要素
+	 */
 	public synchronized
 	Element createXMLElement(Document document, String parentElementName) {
 		Element parentElement = document.createElement(parentElementName);

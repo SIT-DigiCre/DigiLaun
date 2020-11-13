@@ -1,6 +1,3 @@
-/**
- * 
- */
 package net.digicre.digilaun.config.regworks;
 
 import java.io.File;

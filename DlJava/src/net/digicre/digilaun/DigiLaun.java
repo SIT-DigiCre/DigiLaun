@@ -9,6 +9,7 @@ import java.util.ListIterator;
 import javax.swing.JFrame;
 
 import net.digicre.digilaun.work.Work;
+
 import java.awt.BorderLayout;
 import javax.swing.JLabel;
 import java.awt.Font;

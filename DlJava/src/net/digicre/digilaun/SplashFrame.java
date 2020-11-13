@@ -1,7 +1,6 @@
 package net.digicre.digilaun;
 
 import java.awt.BorderLayout;
-import java.awt.EventQueue;
 import java.awt.Rectangle;
 
 import javax.swing.ImageIcon;

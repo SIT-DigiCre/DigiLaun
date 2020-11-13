@@ -9,6 +9,7 @@ import java.util.ListIterator;
 import javax.swing.JFrame;
 
 import net.digicre.digilaun.work.Work;
+
 import java.awt.BorderLayout;
 import javax.swing.JLabel;
 import java.awt.Font;
@@ -146,7 +147,7 @@ public class DigiLaun {
 		frmDigiLaun.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		frmDigiLaun.getContentPane().setLayout(new CardLayout(0, 0));
 		
-				JLabel splashLabel = new JLabel("じゅむびちふ");
+				JLabel splashLabel = new JLabel("じゆむびちふ");
 				splashLabel.setHorizontalTextPosition(SwingConstants.CENTER);
 				splashLabel.setVerticalTextPosition(SwingConstants.BOTTOM);
 				splashLabel.setHorizontalAlignment(SwingConstants.CENTER);

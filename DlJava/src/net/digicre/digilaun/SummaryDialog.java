@@ -8,7 +8,9 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+
 import net.digicre.digilaun.work.Work;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
@@ -298,6 +300,8 @@ class SummaryDialog extends JDialog {
 			}
 		}
 		this.summaryImageArea.setWork(work);
+		if(work.getLaunchedFile() == null)
+			this.startButton.setEnabled(false);
 		// 情報テキストがありそうでなければ情報ボタンを無効化
 		this.btni.setEnabled(
 				work.getDetailTextFile() != null &&
@@ -321,7 +325,8 @@ class SummaryDialog extends JDialog {
 		System.arraycopy(work.getArgs(), 0, command, 1, work.getArgs().length);
 		final ProcessBuilder pb = new ProcessBuilder(command);
 		pb.directory(pdir != null ? pdir : new File("."));
-		try {
+		// 展示モードならロガーを準備
+		if(DigiLaun.config.getMode() == Config.Mode.DISPLAY) try {
 			logger = new ProcessLogger();
 		} catch (IOException e2) {
 			e2.printStackTrace();
@@ -353,11 +358,12 @@ class SummaryDialog extends JDialog {
 				putLog(ProcessLogger.OpenStatus.CannotOpen);
 				System.err.println(e .getLocalizedMessage());
 				System.err.println(e1.getLocalizedMessage());
-				javax.swing.JOptionPane.showMessageDialog(
+				JOptionPane.showMessageDialog(
 						SummaryDialog.this, String.format("%s\n\n%s\n\n%s",
 								SummaryDialog.OPENING_ERROR_MESSAGE,
 								e .getLocalizedMessage(),
-								e1.getLocalizedMessage()));
+								e1.getLocalizedMessage()),
+								"Digi Laun", JOptionPane.ERROR_MESSAGE);
 			}
 		}
 	}

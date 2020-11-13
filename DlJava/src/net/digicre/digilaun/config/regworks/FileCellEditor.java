@@ -1,6 +1,3 @@
-/**
- * 
- */
 package net.digicre.digilaun.config.regworks;
 
 import java.io.File;
@@ -43,8 +40,12 @@ public class FileCellEditor extends DefaultCellEditor implements
 			boolean isSelected, int row, int column) {
 		final FileCellEditorPanel editorPanel =
 				(FileCellEditorPanel)this.editorComponent.getParent();
-		editorPanel.setBackground(isSelected ?
-				table.getSelectionBackground() : table.getBackground());
+		if(isSelected) {
+			editorPanel.setBackground(table.getSelectionBackground());
+			editorPanel.getPathTextField().requestFocusInWindow();
+		}
+		else
+			editorPanel.setBackground(table.getBackground());
 		editorPanel.setValue(value);
 		return editorPanel;
 	}

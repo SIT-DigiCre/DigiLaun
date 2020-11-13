@@ -130,8 +130,10 @@ public class FileCellEditorPanel extends JPanel {
 	 * @param value このパネルに入力される値
 	 */
 	public void setValue(Object value) {
-		this.pathTextField.setText(value instanceof File ?
-				((File)value).getPath() : value.toString());
+		this.pathTextField.setText(
+				value instanceof File ? ((File)value).getPath() :
+					value != null ? value.toString() :
+						"");
 	}
 
 	/**

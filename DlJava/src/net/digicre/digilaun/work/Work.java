@@ -111,37 +111,37 @@ public class Work implements Comparable<Work> {
     /**
 	 * 作品タイトルです。
 	 */
-    String name;
+	protected String name;
     /**
 	 * 開くファイルの相対パスです。
 	 */
-    File launchedFile;
+    protected File launchedFile;
     /**
 	 * コマンドライン引数です。
 	 */
-    String[] args;
+    protected String[] args;
     /**
 	 * タイトル画像の相対パスです。
 	 */
-    File summaryImageFile;
+    protected File summaryImageFile;
     /**
 	 * アイコン画像の相対パスです。
 	 */
-    File iconFile;
+    protected File iconFile;
     /**
 	 * クレジットの相対パスです。
 	 */
-    File detailTextFile;
+    protected File detailTextFile;
     /**
 	 * 入力デバイスです。
 	 */
-    String inputDeviceName;
+    protected String inputDeviceName;
     /**
 	 * リリース年度です。
 	 */
-    int year;
+    protected int year;
 
-    Work() {}
+    protected Work() {}
 
     /**
      * 指定された作品オブジェクトのコピーを作成します。
@@ -172,7 +172,8 @@ public class Work implements Comparable<Work> {
      * @return 作品を開くパス
      */
     public File getLaunchedFile() {
-    	return new File(launchedFile.getPath());
+    	return launchedFile ==
+    			null ? null : new File(launchedFile.getPath());
     }
 
     /**
@@ -189,7 +190,8 @@ public class Work implements Comparable<Work> {
      * @return 作品ボタンに使用するアイコン画像へのパス
      */
     public File getIconFile() {
-    	return new File(iconFile.getPath());
+    	return iconFile == null
+    			? null : new File(iconFile.getPath());
     }
 
     /**
@@ -197,7 +199,8 @@ public class Work implements Comparable<Work> {
      * @return 作品を説明する画像へのパス
      */
     public File getSummaryImageFile() {
-    	return new File(summaryImageFile.getPath());
+    	return summaryImageFile == null
+    			? null : new File(summaryImageFile.getPath());
     }
 
     /**
@@ -205,7 +208,8 @@ public class Work implements Comparable<Work> {
      * @return 作品の情報テキストファイルへのパス
      */
     public File getDetailTextFile() {
-    	return new File(detailTextFile.getPath());
+    	return detailTextFile == null
+    			? null : new File(detailTextFile.getPath());
     }
 
     /**
@@ -423,10 +427,14 @@ public class Work implements Comparable<Work> {
 		elmWork.setAttribute(XML_ATTR_YEAR, Integer.toString(this.year));
 		elmWork.setAttribute(XML_ATTR_NAME,                  this.name);
 		elmWork.setAttribute(XML_ATTR_IDEV,                  this.inputDeviceName);
-		elmWork.setAttribute(XML_ATTR_PATH,                  this.launchedFile.getPath());
-		elmWork.setAttribute(XML_ATTR_ICON,                  this.iconFile.getPath());
-		elmWork.setAttribute(XML_ATTR_PICT,                  this.summaryImageFile.getPath());
-		elmWork.setAttribute(XML_ATTR_INFO,                  this.detailTextFile.getPath());
+		if(this.launchedFile != null)
+			elmWork.setAttribute(XML_ATTR_PATH,              this.launchedFile.getPath());
+		if(this.iconFile != null)
+			elmWork.setAttribute(XML_ATTR_ICON,              this.iconFile.getPath());
+		if(this.summaryImageFile != null)
+			elmWork.setAttribute(XML_ATTR_PICT,              this.summaryImageFile.getPath());
+		if(this.detailTextFile != null)
+			elmWork.setAttribute(XML_ATTR_INFO,              this.detailTextFile.getPath());
 
 		// コマンドライン引数
 		for(String argv : this.args) {

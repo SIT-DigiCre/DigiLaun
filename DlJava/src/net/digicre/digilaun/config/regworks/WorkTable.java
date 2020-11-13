@@ -10,7 +10,7 @@ import javax.swing.table.TableRowSorter;
 
 import net.digicre.digilaun.work.Work;
 import net.digicre.digilaun.work.WorkList;
-import net.digicre.digilaun.work.WritableWork;
+import net.digicre.digilaun.work.settable.SettableWork;
 
 /**
  * 作品テーブルです。このテーブルは作品リストを可変長配列で保持し、
@@ -68,7 +68,7 @@ public class WorkTable extends JTable {
 			this.editedWorksArray =
 					new ArrayList<Work>(workList.size()+10);
 			for(Work work : workList)
-				this.editedWorksArray.add(new WritableWork(work));
+				this.editedWorksArray.add(new SettableWork(work));
 		}
 		((WorkTableModel)this.getModel()).setWorkList(this.editedWorksArray);
 		((WorkTableModel)this.getModel()).fireTableDataChanged();
@@ -92,7 +92,7 @@ public class WorkTable extends JTable {
 	 * 新しい今年度作品を表に追加します。
 	 */
 	public void addWork() {
-		this.addRow(new WritableWork());
+		this.addRow(new SettableWork());
 	}
 
 	/**

@@ -1,7 +1,6 @@
 package net.digicre.digilaun;
 
 import java.awt.BorderLayout;
-import java.awt.EventQueue;
 import java.awt.Rectangle;
 
 import javax.swing.ImageIcon;
@@ -78,22 +77,6 @@ public class SplashFrame extends JFrame {
 	private JPanel contentPane;
 
 	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					SplashFrame frame = new SplashFrame();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
 	 * Create the frame.
 	 */
 	public SplashFrame() {
@@ -116,7 +99,7 @@ public class SplashFrame extends JFrame {
 		setLocation(bounds.x + (bounds.width-getWidth())/2,
 				bounds.y + (bounds.height-getHeight())/2);
 		
-		JLabel splashLabel = new JLabel("読み込みちふ...");
+		JLabel splashLabel = new JLabel("よみこみちふ");
 		splashLabel.setFont(splashLabel.getFont().deriveFont(23f));
 		splashLabel.setVerticalTextPosition(SwingConstants.BOTTOM);
 		splashLabel.setHorizontalAlignment(SwingConstants.CENTER);

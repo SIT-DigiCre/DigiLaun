@@ -7,7 +7,6 @@ import java.awt.RenderingHints;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.image.ImageObserver;
-
 import javax.swing.JComponent;
 
 import net.digicre.digilaun.work.Work;
@@ -60,7 +59,7 @@ public class SummaryImageArea extends JComponent implements ComponentListener {
 			this.baseImage =
 					ImageCache.getInstance().getImage(work.getSummaryImageFile());
 		}
-		catch(java.io.IOException e) {
+		catch(Exception e) {
 			createAlternativeImage();
 			this.baseImage = alternativeImage;
 		}

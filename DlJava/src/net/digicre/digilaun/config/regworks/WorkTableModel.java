@@ -10,8 +10,9 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableRowSorter;
+
 import net.digicre.digilaun.work.Work;
-import net.digicre.digilaun.work.WritableWork;
+import net.digicre.digilaun.work.settable.SettableWork;
 
 /**
  * 作品表のモデルです。
@@ -42,7 +43,7 @@ public class WorkTableModel extends AbstractTableModel {
 		@SuppressWarnings("unchecked")
 		final void set(int row, Object value) {
 			this.set(
-					(WritableWork)WorkTableModel.this.relatedList.get(row),
+					(SettableWork)WorkTableModel.this.relatedList.get(row),
 					(CellType)value);
 		}
 
@@ -58,7 +59,7 @@ public class WorkTableModel extends AbstractTableModel {
 		 * @param work 設定先の作品オブジェクト
 		 * @param value <code>work</code> に設定するデータ
 		 */
-		abstract void set(WritableWork work, CellType value);
+		abstract void set(SettableWork work, CellType value);
 
 		/**
 		 * この列の名前を取得します。
@@ -92,7 +93,7 @@ public class WorkTableModel extends AbstractTableModel {
 				{ return Integer.class; }
 				@Override Integer get(Work work)
 				{ return work.getYear(); }
-				@Override void set(WritableWork work, Integer value)
+				@Override void set(SettableWork work, Integer value)
 				{ work.setYear(value); }
 			}, new Column<String>() {
 				@Override String getName()
@@ -101,7 +102,7 @@ public class WorkTableModel extends AbstractTableModel {
 				{ return String.class; }
 				@Override String get(Work work)
 				{ return work.getName(); }
-				@Override void set(WritableWork work, String value)
+				@Override void set(SettableWork work, String value)
 				{ work.setName(value); }
 			}, new Column<String>() {
 				@Override String getName()
@@ -110,7 +111,7 @@ public class WorkTableModel extends AbstractTableModel {
 				{ return String.class; }
 				@Override String get(Work work)
 				{ return work.getInputDeviceName(); }
-				@Override void set(WritableWork work, String value)
+				@Override void set(SettableWork work, String value)
 				{ work.setInputDeviceName(value); }
 			}, new Column<File>() {
 				final FileFilter[] fileFilters =
@@ -131,8 +132,8 @@ public class WorkTableModel extends AbstractTableModel {
 				{ return File.class; }
 				@Override File get(Work work)
 				{ return work.getLaunchedFile(); }
-				@Override void set(WritableWork work, File value)
-				{ work.setPath(value); }
+				@Override void set(SettableWork work, File value)
+				{ work.setLaunchedFile(value); }
 //			}, new Column() {
 //				@Override String getName()
 //				{ return "コマンドライン引数"; }
@@ -157,7 +158,7 @@ public class WorkTableModel extends AbstractTableModel {
 				{ return File.class; }
 				@Override File get(Work work)
 				{ return work.getIconFile(); }
-				@Override void set(WritableWork work, File value)
+				@Override void set(SettableWork work, File value)
 				{ work.setIconFile(value); }
 			}, new Column<File>() {
 				final FileFilter[] fileFilters =
@@ -174,7 +175,7 @@ public class WorkTableModel extends AbstractTableModel {
 				{ return File.class; }
 				@Override File get(Work work)
 				{ return work.getSummaryImageFile(); }
-				@Override void set(WritableWork work, File value)
+				@Override void set(SettableWork work, File value)
 				{ work.setSummaryImageFile(value); }
 			}, new Column<File>() {
 				final FileFilter[] fileFilters =
@@ -192,7 +193,7 @@ public class WorkTableModel extends AbstractTableModel {
 				{ return File.class; }
 				@Override File get(Work work)
 				{ return work.getDetailTextFile(); }
-				@Override void set(WritableWork work, File value)
+				@Override void set(SettableWork work, File value)
 				{ work.setDetailTextFile(value); }
 			}
 	};
@@ -278,7 +279,7 @@ public class WorkTableModel extends AbstractTableModel {
 	public boolean isCellEditable(int row, int col) {
 		return this.getRowCount() > row &&
 				this.getColumnCount() > col &&
-				this.relatedList.get(row) instanceof WritableWork;
+				this.relatedList.get(row) instanceof SettableWork;
 	}
 
 	/**
@@ -301,7 +302,9 @@ public class WorkTableModel extends AbstractTableModel {
 	@Override
 	public void setValueAt(Object aValue, int row, int col) {
 		// 設定前後の値が等価ならイベントを起こさない
-		final boolean changed = !this.getValueAt(row, col).equals(aValue);
+		final boolean changed = aValue != null
+				? !aValue.equals(this.getValueAt(row, col))
+						: this.getValueAt(row, col) != null;
 
 		this.columns[col].set(row, aValue);
 		if(changed)
@@ -313,7 +316,7 @@ public class WorkTableModel extends AbstractTableModel {
 	 * @param work 作品
 	 */
 	public void addRow(Work work) {
-		this.relatedList.add(new WritableWork(work));
+		this.relatedList.add(new SettableWork(work));
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			@Override
 			public void run() {

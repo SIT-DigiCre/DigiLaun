@@ -323,7 +323,8 @@ class SummaryDialog extends JDialog {
 		System.arraycopy(work.getArgs(), 0, command, 1, work.getArgs().length);
 		final ProcessBuilder pb = new ProcessBuilder(command);
 		pb.directory(pdir != null ? pdir : new File("."));
-		try {
+		// 展示モードならロガーを準備
+		if(DigiLaun.config.getMode() == Config.Mode.DISPLAY) try {
 			logger = new ProcessLogger();
 		} catch (IOException e2) {
 			e2.printStackTrace();

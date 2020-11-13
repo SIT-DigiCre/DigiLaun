@@ -1,0 +1,14 @@
+# 2020-11-14 追加
+
+# Git 設定
+.gitignore text
+.gitattributes text
+
+# コード
+*.java text diff=java
+
+# その他
+*.md text diff=markdown
+*.bat text eol=crlf
+*.svg text
+.classpath text

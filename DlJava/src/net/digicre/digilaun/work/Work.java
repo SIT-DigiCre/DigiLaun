@@ -111,37 +111,37 @@ public class Work implements Comparable<Work> {
     /**
 	 * 作品タイトルです。
 	 */
-    String name;
+	protected String name;
     /**
 	 * 開くファイルの相対パスです。
 	 */
-    File launchedFile;
+    protected File launchedFile;
     /**
 	 * コマンドライン引数です。
 	 */
-    String[] args;
+    protected String[] args;
     /**
 	 * タイトル画像の相対パスです。
 	 */
-    File summaryImageFile;
+    protected File summaryImageFile;
     /**
 	 * アイコン画像の相対パスです。
 	 */
-    File iconFile;
+    protected File iconFile;
     /**
 	 * クレジットの相対パスです。
 	 */
-    File detailTextFile;
+    protected File detailTextFile;
     /**
 	 * 入力デバイスです。
 	 */
-    String inputDeviceName;
+    protected String inputDeviceName;
     /**
 	 * リリース年度です。
 	 */
-    int year;
+    protected int year;
 
-    Work() {}
+    protected Work() {}
 
     /**
      * 指定された作品オブジェクトのコピーを作成します。

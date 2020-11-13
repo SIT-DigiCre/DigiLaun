@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 
 import net.digicre.digilaun.Config;
+import net.digicre.digilaun.work.settable.SettableWork;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -173,13 +174,13 @@ public class WorkList extends LinkedList<Work> {
 	 * このリストに含まれる作品の、
 	 * 書き換え可能なコピーをリストに格納して取得します。
 	 * @return この作品リストの1段深いコピー
-	 * (各要素は {@link WritableWork} に変換される)
+	 * (各要素は {@link SettableWork} に変換される)
 	 */
-	synchronized public WorkList getWritableCopy() {
+	synchronized public WorkList getSettableCopy() {
 		WorkList copy = new WorkList();
 
 		for(Work work : this)
-			copy.add(new WritableWork(work));
+			copy.add(new SettableWork(work));
 		return copy;
 	}
 

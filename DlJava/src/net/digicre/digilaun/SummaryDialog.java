@@ -298,6 +298,8 @@ class SummaryDialog extends JDialog {
 			}
 		}
 		this.summaryImageArea.setWork(work);
+		if(work.getLaunchedFile() == null)
+			this.startButton.setEnabled(false);
 		// 情報テキストがありそうでなければ情報ボタンを無効化
 		this.btni.setEnabled(
 				work.getDetailTextFile() != null &&

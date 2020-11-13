@@ -1,7 +1,6 @@
 package net.digicre.digilaun.config;
 
 import net.digicre.digilaun.Config;
-import net.digicre.digilaun.Config.Mode;
 
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
@@ -154,7 +153,8 @@ public class SettingsPanel extends ConfigPanel {
 		while(i.hasMoreElements()) {
 			AbstractButton radioButton = i.nextElement();
 			if(radioButton.isSelected()) {
-				config.setMode(Mode.valueOf(radioButton.getActionCommand()));
+				config.setMode(Config.Mode.valueOf(
+						radioButton.getActionCommand()));
 				break;
 			}
 		}

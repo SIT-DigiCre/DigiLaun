@@ -130,7 +130,7 @@ public class DlConfig implements ConfigListener {
 			}
 		});
 		frmDigiLaun.setTitle("Digi Laun 環境設定ツール");
-		frmDigiLaun.setBounds(100, 100, 640, 360);
+		frmDigiLaun.setBounds(0, 100, 1024, 512);
 		frmDigiLaun.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		frmDigiLaun.getContentPane().setLayout(new BorderLayout(0, 0));
 		

@@ -301,7 +301,9 @@ public class WorkTableModel extends AbstractTableModel {
 	@Override
 	public void setValueAt(Object aValue, int row, int col) {
 		// 設定前後の値が等価ならイベントを起こさない
-		final boolean changed = !this.getValueAt(row, col).equals(aValue);
+		final boolean changed = aValue != null
+				? !aValue.equals(this.getValueAt(row, col))
+						: this.getValueAt(row, col) != null;
 
 		this.columns[col].set(row, aValue);
 		if(changed)

@@ -423,10 +423,14 @@ public class Work implements Comparable<Work> {
 		elmWork.setAttribute(XML_ATTR_YEAR, Integer.toString(this.year));
 		elmWork.setAttribute(XML_ATTR_NAME,                  this.name);
 		elmWork.setAttribute(XML_ATTR_IDEV,                  this.inputDeviceName);
-		elmWork.setAttribute(XML_ATTR_PATH,                  this.launchedFile.getPath());
-		elmWork.setAttribute(XML_ATTR_ICON,                  this.iconFile.getPath());
-		elmWork.setAttribute(XML_ATTR_PICT,                  this.summaryImageFile.getPath());
-		elmWork.setAttribute(XML_ATTR_INFO,                  this.detailTextFile.getPath());
+		if(this.launchedFile != null)
+			elmWork.setAttribute(XML_ATTR_PATH,              this.launchedFile.getPath());
+		if(this.iconFile != null)
+			elmWork.setAttribute(XML_ATTR_ICON,              this.iconFile.getPath());
+		if(this.summaryImageFile != null)
+			elmWork.setAttribute(XML_ATTR_PICT,              this.summaryImageFile.getPath());
+		if(this.detailTextFile != null)
+			elmWork.setAttribute(XML_ATTR_INFO,              this.detailTextFile.getPath());
 
 		// コマンドライン引数
 		for(String argv : this.args) {

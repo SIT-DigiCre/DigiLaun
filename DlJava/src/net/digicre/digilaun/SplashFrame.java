@@ -100,7 +100,7 @@ public class SplashFrame extends JFrame {
 		setLocation(bounds.x + (bounds.width-getWidth())/2,
 				bounds.y + (bounds.height-getHeight())/2);
 		
-		JLabel splashLabel = new JLabel("読み込みちふ...");
+		JLabel splashLabel = new JLabel("よみこみちふ");
 		splashLabel.setFont(splashLabel.getFont().deriveFont(23f));
 		splashLabel.setVerticalTextPosition(SwingConstants.BOTTOM);
 		splashLabel.setHorizontalAlignment(SwingConstants.CENTER);

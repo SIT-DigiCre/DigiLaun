@@ -353,11 +353,12 @@ class SummaryDialog extends JDialog {
 				putLog(ProcessLogger.OpenStatus.CannotOpen);
 				System.err.println(e .getLocalizedMessage());
 				System.err.println(e1.getLocalizedMessage());
-				javax.swing.JOptionPane.showMessageDialog(
+				JOptionPane.showMessageDialog(
 						SummaryDialog.this, String.format("%s\n\n%s\n\n%s",
 								SummaryDialog.OPENING_ERROR_MESSAGE,
 								e .getLocalizedMessage(),
-								e1.getLocalizedMessage()));
+								e1.getLocalizedMessage()),
+								"Digi Laun", JOptionPane.ERROR_MESSAGE);
 			}
 		}
 	}

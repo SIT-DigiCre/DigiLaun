@@ -42,13 +42,13 @@ public class RegWorksPanel extends ConfigPanel implements TableModelListener {
 		flowLayout.setAlignment(FlowLayout.LEFT);
 		add(panel, BorderLayout.SOUTH);
 		
-		JButton btnAdd = new JButton("追加(A)");
+		JButton btnAdd = new JButton("追加(D)");
 		btnAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				RegWorksPanel.this.workTable.addWork();
 			}
 		});
-		btnAdd.setMnemonic('A');
+		btnAdd.setMnemonic('D');
 		panel.add(btnAdd);
 		
 		JButton btnRemove = new JButton("削除(R)");

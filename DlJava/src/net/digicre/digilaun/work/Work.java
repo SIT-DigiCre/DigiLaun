@@ -172,7 +172,8 @@ public class Work implements Comparable<Work> {
      * @return 作品を開くパス
      */
     public File getLaunchedFile() {
-    	return new File(launchedFile.getPath());
+    	return launchedFile ==
+    			null ? null : new File(launchedFile.getPath());
     }
 
     /**
@@ -189,7 +190,8 @@ public class Work implements Comparable<Work> {
      * @return 作品ボタンに使用するアイコン画像へのパス
      */
     public File getIconFile() {
-    	return new File(iconFile.getPath());
+    	return iconFile == null
+    			? null : new File(iconFile.getPath());
     }
 
     /**
@@ -197,7 +199,8 @@ public class Work implements Comparable<Work> {
      * @return 作品を説明する画像へのパス
      */
     public File getSummaryImageFile() {
-    	return new File(summaryImageFile.getPath());
+    	return summaryImageFile == null
+    			? null : new File(summaryImageFile.getPath());
     }
 
     /**
@@ -205,7 +208,8 @@ public class Work implements Comparable<Work> {
      * @return 作品の情報テキストファイルへのパス
      */
     public File getDetailTextFile() {
-    	return new File(detailTextFile.getPath());
+    	return detailTextFile == null
+    			? null : new File(detailTextFile.getPath());
     }
 
     /**

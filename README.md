@@ -26,3 +26,8 @@ DigiLaun
 - リセットせずに1時間立つと機能停止します(混雑対策) 
 - バグった作品を強制終了させれます
 - 起動・終了（正常、異常、強制）の履歴を残してくれます
+
+# 他の言語で書かれたバージョンを見る
+
+- [C++/CLI](https://github.com/SIT-DigiCre/DigiLaun1.git)
+- [C#](https://github.com/SIT-DigiCre/DigiLaun2.git)

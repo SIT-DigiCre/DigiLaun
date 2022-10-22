@@ -1,0 +1,328 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=shift_jis">
+<title>Digi Laun 取扱説明書</title>
+<style type="text/css"><!--
+@media screen {
+	body {
+		background-color: white;
+		           color: black;
+	}
+	table {
+		margin: 1pt 0;
+		padding: 0;
+		border: thin outset gray;
+	}
+	table th, table td {
+		margin: 0;
+		background: white;
+		border: thin inset black;
+	}
+}
+img {
+	margin: 1pt 0;
+}
+.schar {
+	color: gray;
+}
+.akey {
+	text-decoration: underline;
+}
+td.version {
+}
+td.dl_caption {
+	height: 32px;
+	padding: 0;
+	text-align: center;
+	font: 18pt "ＭＳ Ｐゴシック";
+}
+tr.commented-out th, tr.commented-out td {
+	color: gray;
+	text-decoration: line-through;
+}
+--></style>
+</head>
+<body>
+<h1>Digi Laun 取扱説明書</h1>
+<hr>
+<p><a name="index"></a>目次</p>
+<ul>
+	<li><a href="#about">このソフトについて</a></li>
+	<li><a href="#require">要求スペック</a></li>
+	<li><a href="#using">使い方</a></li>
+	<li><a href="#config">コンフィグについて</a>
+	<ul>
+		<li><a href="#register">作品の登録方法</a></li>
+		<li><a href="#mode_changing">モード変更のやり方</a></li>
+	</ul></li>
+	<li><a href="#batch_file">CleanUp.bat について</a></li>
+	<li><a href="#history">更新履歴</a></li>
+</ul>
+<hr>
+<h2><a name="about"></a>このソフトについて</h2>
+<p>
+Digi Laun というのは、芝浦祭等に出展する作品向けのランチャープログラムです。
+</p>
+<div><a href="#index">目次へ</a></div>
+<hr>
+<h2><a name="require"></a>要求スペック</h2>
+<ul>
+<li>OS : 任意</li>
+<li>ソフト : JRE 6 以降 (<a href="http://www.java.com/">ダウンロード</a>)</li>
+</ul>
+<div><a href="#index">目次へ</a></div>
+<hr>
+<h2><a name="using"></a>使い方</h2>
+<h4>バージョン 3.0 からの新機能!!</h4>
+<div>
+Digi Laun を頒布用と展示用で使い分けられるようになりました。
+config.jar でモードを「展示モード」「頒布モード」から選択できます。頒布モードには以下の特徴があります。
+<ul>
+<li>時間無制限で、ウィンドウ上の帯がずっと緑色のままです</li>
+<li>隠しキーコマンドが使えません</li>
+<li>普通にウィンドウで表示します (展示モードでは全画面になります)</li>
+<li>[閉じる] ボタンで終了できます</li>
+</ul>
+</div>
+
+<p>
+DigiLaun.jar を実行すると以下のようなウィンドウが出てきます。<br>
+<img src="rm_img/ss_main.png" alt="メインウィンドウ"><br>
+作品のボタンを押すと概要ウィンドウが出てきます。<br>
+<img src="rm_img/ss_summary.png" alt="概要ウィンドウ"><br>
+「もどる」ボタンで概要ウィンドウを閉じます。<br>
+「はじめる！」ボタンを押すとプログラムを起動します。<br>
+この時「もどる」ボタンが変化して別のボタンになります。<br>
+<img src="rm_img/Back.png" alt="もどる"><img src="rm_img/rarr.png" alt="&rarr;へんしん！&rarr;" style="margin:0 1pt;"><img src="rm_img/Kill.png" alt="Kill"><br>
+これを押すとプログラムを強制終了します。緊急時にお使いください。<br>
+</p>
+
+<p>
+また、しばらく起動しているとウィンドウ上部が徐々に変化していきます。時間の目安にしましょう。
+</p>
+<table>
+<tr><th>起動直後</th><td class="dl_caption" style="background:#80ff80">作品を選んでください</td></tr>
+<tr><th>起動から5分</th><td class="dl_caption" style="background:#80ffff">作品を選んでください</td></tr>
+<tr><th>起動から10分</th><td class="dl_caption" style="background:#8080ff">作品を選んでください</td></tr>
+<tr><th>起動から15分</th><td class="dl_caption" style="background:#ff80ff">作品を選んでください</td></tr>
+<tr><th>起動から20分</th><td class="dl_caption" style="background:#ff8080">遊んでくれてありがとうございました!</td></tr>
+<tr><th>起動から25分</th><td class="dl_caption" style="background:#ffff80">遊んでくれてありがとうございました!</td></tr>
+<tr><th>起動から30分</th><td class="dl_caption" style="background:#80ff80">遊んでくれてありがとうございました!</td></tr>
+<tr><th>起動から35分</th><td class="dl_caption" style="background:#80ffff">遊んでくれてありがとうございました!</td></tr>
+<tr><th>起動から40分</th><td class="dl_caption" style="background:#8080ff">遊びすぎです…</td></tr>
+<tr><th>起動から45分</th><td class="dl_caption" style="background:#ff80ff">遊びすぎです…</td></tr>
+<tr><th>起動から50分</th><td class="dl_caption" style="background:#ff8080">遊びすぎです…</td></tr>
+<tr><th>起動から55分</th><td class="dl_caption" style="background:#ffff80">遊びすぎです…</td></tr>
+<tr><th>起動から1時間</th><td class="dl_caption" style="background:#ffffff">TIME UP!</td></tr>
+</table>
+<p>
+順番待ちのお客さんがいるときはランチャーの背景色を目安にして、長く遊んでいそうな人と交替させてあげてください。<br>
+あと交替するときにランチャーを一度リセットしてください。<br>
+(しかしフルスクリーンで遊ばれると全くわからないという罠orz)<br>
+ちなみに1時間経つと硬直します。<br>
+硬直した場合は、以下のリセットコマンドを使うまで元に戻りません。
+</p>
+
+<p style="color: red; font-weight: bold;">
+注意:いたずらを防ぐため、ランチャーの終了などは操作が面倒になっております。<br>
+使用する前に以下のキー操作をすべて覚えるか、紙に書いて持ち歩くようにしてください。<br>
+</p>
+<table>
+<tr><th>キー操作</th><th>押すと起こること</th></tr>
+<tr><td>Ctrl + Shift + 2</td><td>終了します。</td></tr>
+<tr><td>Ctrl + Shift + ハイフン</td><td>ウィンドウ上部の帯を元に戻して、硬直を解きます。（リセット）<br>少しの間ウィンドウが消えるのは仕様です。</td></tr>
+</table>
+<div><a href="#index">目次へ</a></div>
+<hr>
+<h2><a name="config"></a>コンフィグについて</h2>
+<h3><a name="register"></a>作品の登録方法</h3>
+<p>
+　まず必要なものを用意してください。
+</p>
+<ul>
+<li>作品本体
+    <ul>
+    <li>exe以外も開けます</li>
+    </ul></li>
+<li>作品のタイトルや簡単な遊び方などを記した概要イメージ
+    <ul>
+    <li>サイズ無制限
+        <ul>
+        <li>ドット絵をきれいに表示させたいなら横640px、縦480px</li>
+        </ul></li>
+    </ul></li>
+<li>ボタンに貼り付けるアイコン画像
+    <ul>
+    <li>これも実質サイズ無制限、でも横長が基本
+        <ul>
+        <li>縦横比は 横2:縦1 くらいが適当</li>
+        <li>ドット絵をきれいに表示させたいなら横128pxくらい、縦64px</li>
+        </ul></li>
+    </ul></li>
+<li>著作権その他の情報をまとめたテキストファイル
+    <ul>
+    <li>txt または RTF, HTML 形式
+        <ul>
+        <li>フリー素材に頼ってる場合はライセンスをきちんと記そう</li>
+        <li>txt はシフト JIS のみ対応</li>
+        <li>RTF は現在、日本語に対応してないみたいです。うわさでは文字コードを UTF-8 にするといいとか…</li>
+        </ul></li>
+    <li>実は PDF などでも可 (コンフィグにてファイル選択時に「ファイルの種類」をクリックすると…)</li>
+    </ul></li>
+</ul>
+
+<p>
+　画像として使用可能な形式は、GIF, JPEG, PNG (&alpha;チャンネル対応) です。
+</p>
+
+<p>
+　次にこれらを適当なフォルダにまとめます。<br>
+　そしたら DigiLaun.jar があるフォルダに「config.jar」というファイルがあるので、これを実行してください。<br>
+<img src="rm_img/ss_rgwrks.png" alt="Swingの恩恵を受けたデジロンの新装備品"><br>
+表の編集箇所をダブルクリックすると編集できます。以下、列の説明です。</p>
+<dl>
+<dt>「入力デバイス」</dt>
+<dd>アプリの入力に使うデバイス（マウス、キーボード、ゲームパッドなど）です。アプリでなければ空欄で大丈夫です。</dd>
+<dt>「パス」</dt>
+<dd>例えばゲームソフトならEXE、CGならPNG、DTM作品ならMP3といったふうに、<span style="font-weight:bold;">作品を見るときにダブルクリックで開くファイル</span>のパスを入れてください。</dd>
+<dt>「アイコン」</dt>
+<dd>ボタンに貼り付けるアイコン画像です。</dd>
+<dt>「概要画像」</dt>
+<dd>作品のタイトルや簡単な遊び方などを記した概要イメージです。</dd>
+<dt>「詳細テキスト」</dt>
+<dd>著作権その他の情報をまとめたテキストファイルです。</dd>
+</dl>
+<p>
+　作品データの追加をしたいときは左下の「追加」ボタン (Alt+D) で追加できます。<br>
+　作品データの削除をしたいときは表から修正・削除したい項目を選んで、左下の「削除」ボタン (Alt+R) で削除できます。<br>
+　終わったら右下の &quot;OK&quot; または「適用」で保存できます。<br>
+<img src="rm_img/ss_rgwrks_file.png" alt="ファイル編集" style="border: thin ridge;"><br>
+　ファイルを指定するときはこんな感じで &quot;Refer&quot; ボタンが現れます。このボタンを押すと…<br>
+<img src="rm_img/ss_rgwrks_file2.png" alt="ファイル参照"><br>
+こんな感じでダイアログが出るので、これでファイルを選べば指定できます。
+</p>
+
+<div><a href="#index">目次へ</a></div>
+<hr>
+<h3><a name="mode_changing"></a>モード変更のやり方</h3>
+<p>
+config.jar を起動し、「設定」タブを開いてください。<br>
+<img src="rm_img/ss_settings.png" alt="デジロンが得た新スキル"><br>
+設定したいモードにチェックを入れて右下の &quot;OK&quot; で変更できます。
+</p>
+
+<div><a href="#index">目次へ</a></div>
+<hr>
+<h2><a name="log"></a>ログについて</h2>
+<p>
+　Digi Laun を展示モードで起動すると、 Log.csv というファイルに作品の起動ログを取ります。<br>
+　ログには、以下の列があります。
+</p>
+<table>
+<tr><th>作品名</th><th>ファイル</th><th>ステータス</th><th>年</th><th>月</th><th>日</th><th>時</th><th>分</th><th>秒</th><th>エポックからの経過時間 [ms]</th></tr>
+<tr><td>作品の名前</td><td>起動したファイルへのパス</td><td>
+<dl>
+<dt>Started</dt><dd>アプリ起動成功</dd>
+<dt>ExitSuccessful</dt><dd>アプリ正常終了</dd>
+<dt>ExitFailed</dt><dd>アプリ異常終了</dd>
+<dt>Killed</dt><dd>アプリ強制終了</dd>
+<dt>Opened</dt><dd>ファイルを開いた</dd>
+<dt>CannotOpen</dt><dd>起動不可</dd>
+</td><td colspan="6">ログを取った時刻</td><td>1970年1月1日午前0時0分0秒からの大体の経過時間<br>ログの時差からプレイ時間を計るのに使う（後述）</td></tr>
+</table>
+
+<p>
+このログを使って各作品の起動回数、総プレイ時間、平均プレイ時間を計算できます。
+</p>
+
+<div>計算例</div>
+<ul>
+<li>起動回数<ul>
+    <li>ステータスが &quot;Started&quot; または &quot;Opened&quot; になっている回数を数える</li>
+    </ul></li>
+<li>総プレイ時間<ul>
+    <li>ステータスが &quot;Started&quot; になった時刻と &quot;ExitSuccessful&quot; になった時刻の差を求めて、その1回のプレイ時間を求める<br>期間内に起動した時のプレイ時間を全部計算して足す</li>
+    </ul></li>
+<li>平均プレイ時間<ul>
+    <li>合計プレイ時間&divide;起動回数</li>
+    </ul></li>
+</ul>
+<div><a href="#index">目次へ</a></div>
+<hr>
+<h2><a name="batch_file"></a>CleanUp.bat について</h2>
+<p>
+CleanUp.bat を実行すると、作品データに含まれる、不要と思われるファイルをすべて削除します。<br>
+一部の作品が動かなくなる場合があるので、削除するファイルを確認してください。<br>
+(打ち消し線が引いてあるのは、現在のバージョンではコメントアウトして削除されないようにしてあるファイルです。)<br>
+</p>
+<table border="1">
+<tr><th>削除するファイル</th><th>説明</th></tr>
+<tr><td>BuildLog.htm</td><td>Visual Studio のビルドログ</td></tr>
+<tr><td>desktop.ini</td><td>Windows がフォルダのカスタマイズ状態を保存するのに使う</td></tr>
+<tr><td>folder.htt</td><td>Windows がフォルダ表示に特別な機能を追加するのに使う</td></tr>
+<tr><td>Log.txt</td><td>ＤＸライブラリが出力するログ</td></tr>
+<tr><td>Thumbs.db</td><td>Windows がサムネイル画像を保存するのに使う</td></tr>
+<tr class="commented-out"><td>*.bak</td><td>何かのバックアップ</td></tr>
+<tr><td>*.dep</td><td>DLL 製作時に、外部から呼び出し可能な関数を記述するらしい</td></tr>
+<tr><td>*.embed.manifest</td><td>よくわからないけど VC++ のビルド過程で出てくる</td></tr>
+<tr><td>*.idb</td><td>VC++ がビルドを高速化するときに使う</td></tr>
+<tr><td>*.ilk</td><td>VC++ が「インクリメンタルリンク」をするのに使う</td></tr>
+<tr><td>*.intermediate.manifest</td><td>よくわからないけど VC++ のビルド過程で出てくる</td></tr>
+<tr><td>*.lnk</td><td>ショートカット</td></tr>
+<tr class="commented-out"><td>*.mak</td><td>.makefile みたいなもの</td></tr>
+<tr><td>*.obj</td><td>exe ファイルを作る過程で生まれたもの</td></tr>
+<tr><td>*.pch</td><td>VC++ でビルドを高速化するのに使う</td></tr>
+<tr><td>*.pdb</td><td>デバッグに使う</td></tr>
+<tr class="commented-out"><td>*.psd</td><td>Adobe Photoshop で描いた画像</td></tr>
+<tr><td>*.res</td><td>exe に埋め込んで使う</td></tr>
+<tr><td>*.sbr</td><td>VC++ のビルド過程で出てくるらしい中間ファイル</td></tr>
+<tr><td>*.suo</td><td>Visual Studio ソリューションの比較的どうでもいい設定を保存している</td></tr>
+<tr><td>*.tds</td><td>Borland C++ が吐き出すデバッグ情報</td></tr>
+<tr class="commented-out"><td>*.zip</td><td>圧縮フォルダ</td></tr>
+</table>
+<div><a href="#index">目次へ</a></div>
+<hr>
+<h2><a name="history"></a>更新履歴</h2>
+<p>
+バージョン番号はピリオドで区切って左から順に メジャーバージョン.マイナーバージョン となります。<br>
+メジャーバージョンが変わると古いバージョン用の作品データが使えなくなります。<br>
+</p>
+<table>
+<tr><th>2014/03/18</th><td class="version">3.0</td><td>展示モードで起動したとき(ほぼ)全画面表示になるようにした<br><br>コマンドライン引数でモード指定できなくした<br>今後はコンフィグであらかじめモードを指定しておいてください<br><br>その他、 Digi Laun 本体の細かい修正・UI変更<br><br>作品登録・管理ツールをコンフィグとして Java で作り直した</td></tr>
+<tr><th>2013/11/06</th><td class="version">3.0&beta;5</td><td>Ver. 3.0&beta;4 から作品アプリを強制終了できなくなっていたバグを修正した</td></tr>
+<tr><th>2013/11/02</th><td class="version">3.0&beta;4</td><td>Digi Laun 汎用画像以外の、作品のアイコンなどをキャッシュに保持するようにした<br><br>起動したアプリの標準出力がどこにも繋がっていなかったのを、 Digi Laun の標準出力にリダイレクトするようにした</td></tr>
+<tr><th>2013/10/31</th><td class="version">3.0&beta;3</td><td>ラベル色の更新頻度を早めた<br><br>項目が少ないとき、上に詰めるようにした</td></tr>
+<tr><th>2013/10/31</th><td class="version">3.0&beta;2</td><td>年度ごとに作品を隠せるようにした<br>同時に、最新作以外は初期状態で隠れるようにした</td></tr>
+<tr><th>2013/10/23</th><td class="version">3.0&beta;</td><td>開発言語が Java になった (本体のみ)<br>これに伴い、全画面表示、作品アプリの安全終了ができなくなり、画像・文書の対応形式が変わった<br><br>レイアウトを変更した<br>これに伴い、ボタンアイコンの推奨サイズが変わった<br><br>本体用画像データを実行ファイルに組み込まず img フォルダーに置くようになった<br>絵師の皆さんは自由に画像を差し替えちゃってください</td></tr>
+<tr><th>2012/08/03</th><td class="version">2.9</td><td>情報テキストファイルが指定されていないとき例外を吐くバグを修正した</td></tr>
+<tr><th>2012/05/15</th><td class="version">2.8</td><td>情報テキストファイルとして RTF を始めとするすべての形式に対応した<br>同時にファイルサイズの制限が無くなった<p></p>RegWorks で、作品データが一つしかないときに上書き登録を行おうとすると、全消しのときと同じ警告が出てくるバグを修正した</td></tr>
+<tr><th>2012/05/15</th><td class="version">2.7</td><td>制作年度の表示をわかりやすくした<p></p>CleanUp.bat で消されるファイルを減らした<p></p>RegWorks のウィンドウ内のテキストを若干修正した<p></p>RegWorks で「すべて選択」してから「削除」したときの動作を「全消し」と同じにした</td></tr>
+<tr><th>2012/04/26</th><td class="version">2.6</td><td>一部表記変更<p></p>テキストファイル読み込み時の文字コードを UTF-8 から Shift_JIS に変更した<p></p>RegWorks にて右クリックでメニューが出るようになった</td></tr>
+<tr><th>2012/04/26</th><td class="version">2.5</td><td>入力デバイスを表示できるようにした<p></p>ウィンドウ上部のメッセージの変更タイミングを調節した<p></p>一部キー操作を変更した</td></tr>
+<tr><th>2011/10/12</th><td class="version">2.4</td><td>時間経過がわかりやすくなった<p></p>1時間連続プレイで機能停止するようになった<p></p>works.xmlのDTDが誤っていたのを修正した</td></tr>
+<tr><th>2011/08/30</th><td class="version">2.3</td><td>コマンドライン引数を扱えるようになった<p></p>もどるボタン（旧やりなおすボタン）を小さくした</td></tr>
+<tr><th>2011/06/21</th><td class="version">2.2</td><td>RegWorksのプロパティにもまともなバージョン情報を追加した<p></p>著作権情報を「クレジット」に名称変更した<p></p>クレジットが登録されていない場合にボタンが消滅するようにした</td></tr>
+<tr><th>2011/05/09</th><td class="version">2.1</td><td>バージョン情報が2.0になってた<p></p>著作権情報を扱えるようにした<p></p>全消しを行った直後に終了するとき「変更されています」というダイアログが出ないことがあるバグを修正した<p></p>リロードを行った直後に終了するとき「変更されています」というダイアログが出ることがあるバグを修正した<p></p>RegWorks で参照ボタンを押してファイルを選んだときにファイル名しか出てこないバグを修正した</td></tr>
+<tr><th>2011/05/05</th><td class="version">2.0</td><td>開発言語をC#にした<br>それに伴い、必要ソフトが一つ減った<p></p>作品リストをXMLで保存するようにした<p></p>待望の作品登録ツールを同梱するようにした<p></p>一部の環境で全画面モードのON/OFFに時間がかかる仕様を修正した</td></tr>
+<tr><th>2011/03/17</th><td class="version">1.1</td><td>最終発表でもらった意見を反映してみた<ul><li>リセット機能搭載</li><li>全画面モード搭載</li></ul>特大サイズのアイコンを作り直した<p></p>バージョン情報ダイアログを出せるようにした<p></p>作品データを掃除するバッチファイルを追加した<p></p>バージョン番号のカンストに関する表記が間違っていたので修正した (255&rarr;65534)</td></tr>
+<tr><th>2011/02/07</th><td class="version">1.0</td><td>2010年度後期プロジェクト最終発表<p></p>正式版リリース<p></p>マニュアルの表記と実際の挙動が異なるのを修正<br>修正前:画像が非対応の形式だと例外吐いて終了<br>修正後:画像が非対応の形式だと例外吐く<p></p>マニュアルに、作品リストと年度の関係を記した<p></p>UI全面改装<br>それに伴いCSVファイルに「ボタン画像」列の追加<br>再び Tab キー、Space キー、Enter キーによるボタンの選択・押下ができるようになった<p></p>物騒なボタンの追加</td></tr>
+<tr><th>2011/01/23</th><td class="version">1.0&beta;3</td><td>ソフトウェア名の変更<p></p>ボタンデザインの変更<br>それに伴い Tab キー、Space キー、Enter キーによるボタンの選択・押下ができなくなった<p></p>メニュー項目にアクションキー (Alt に続いて対応する文字キーを押して項目を選択する機能) の追加</td></tr>
+<tr><th>2011/01/19</th><td class="version">1.0&beta;2</td><td>メニューから作品を直接選択可能にした<br>それに伴いCSVファイルに「名前」列の追加</td></tr>
+<tr><th>2010/12/10</th><td class="version">1.0&beta;</td><td>2010年度後期プロジェクト中間発表<p></p>配布開始</td></tr>
+</table>
+<div><a href="#index">目次へ</a></div>
+  <p>
+    <a href="http://validator.w3.org/check?uri=referer"><img
+        src="http://www.w3.org/Icons/valid-html401"
+        alt="Valid HTML 4.01 Strict" height="31" width="88"></a>
+  </p>
+<p>
+    <a href="http://jigsaw.w3.org/css-validator/check/referer">
+        <img style="border:0;width:88px;height:31px"
+            src="http://jigsaw.w3.org/css-validator/images/vcss"
+            alt="正当なCSSです!">
+    </a>
+</p>
+</body>
+</html>
